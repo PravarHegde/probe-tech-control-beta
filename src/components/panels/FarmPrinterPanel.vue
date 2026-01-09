@@ -64,7 +64,7 @@
                                         style="width: 100%"
                                         class="my-auto"
                                         alt="Logo" />
-                                    <mainsail-logo
+                                    <brand-logo
                                         v-else
                                         :color="printerLogoColor"
                                         style="width: 100%"
@@ -116,7 +116,7 @@
 import { Component, Mixins, Prop, Ref, Vue } from 'vue-property-decorator'
 import BaseMixin from '@/components/mixins/base'
 import { FarmPrinterState } from '@/store/farm/printer/types'
-import MainsailLogo from '@/components/ui/MainsailLogo.vue'
+import BrandLogo from '@/components/ui/BrandLogo.vue'
 import Panel from '@/components/ui/Panel.vue'
 import { mdiPrinter3d, mdiWebcam, mdiMenuDown, mdiWebcamOff, mdiFileOutline } from '@mdi/js'
 import { Debounce } from 'vue-debounce-decorator'
@@ -129,7 +129,7 @@ import ThemeMixin from '@/components/mixins/theme'
     components: {
         Panel,
         'webcam-wrapper': WebcamWrapper,
-        'mainsail-logo': MainsailLogo,
+        'brand-logo': BrandLogo,
     },
 })
 export default class FarmPrinterPanel extends Mixins(BaseMixin, ThemeMixin, WebcamMixin) {

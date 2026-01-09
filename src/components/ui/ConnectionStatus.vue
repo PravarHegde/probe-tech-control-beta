@@ -9,31 +9,17 @@
         xml:space="preserve"
         xmlns:serif="http://www.serif.com/"
         style="fill-rule: evenodd; clip-rule: evenodd; stroke-linejoin: round; stroke-miterlimit: 2">
-        <g id="Mainsail" transform="matrix(1,0,0,1,10,0)">
-            <g id="Mainsail_text" transform="matrix(1,0,0,1,-54.2745,6.1424)">
+        <g id="ProbeTech" transform="matrix(1,0,0,1,10,0)">
+            <g id="ProbeTech_text" transform="matrix(1,0,0,1,-54.2745,6.1424)">
                 <text
                     x="47.429px"
                     y="60.749px"
                     :style="'font-family:Roboto;font-size:16px;fill:rgb(' + colorMainsail + ');'">
-                    Mainsail
+                    Probe Tech
                 </text>
             </g>
             <g id="Mainsail_icon" transform="matrix(1.00478,0,0,1.00478,-1.35436,-0.18202)">
-                <g transform="matrix(0.101469,0,0,0.101469,1.34792,1.1764)">
-                    <path
-                        d="M286.718,107.235L99.735,392.115L0,392.01L258.225,0C264.135,36.795 273.9,73.26 286.718,107.235"
-                        :style="'fill:rgb(' + colorMainsail + ');fill-rule:nonzero;'" />
-                </g>
-                <g transform="matrix(0.101469,0,0,0.101469,1.34792,1.1764)">
-                    <path
-                        d="M309.96,160.155L156.375,392.19L256.08,392.332L357.353,237.585C339.518,213.218 323.648,187.328 309.96,160.155"
-                        :style="'fill:rgb(' + colorMainsail + ');fill-rule:nonzero;'" />
-                </g>
-                <g transform="matrix(0.101469,0,0,0.101469,1.34792,1.1764)">
-                    <path
-                        d="M449.535,335.768L412.597,392.332L312.75,392.115L388.95,276.862C407.61,298.012 427.868,317.707 449.535,335.767L449.535,335.768Z"
-                        :style="'fill:rgb(' + colorMainsail + ');fill-rule:nonzero;'" />
-                </g>
+                <image href="/logo.svg" x="0" y="-12" width="64" height="64" />
             </g>
         </g>
         <g id="Mainsail_Moonraker" transform="matrix(1,0,0,1,1.49628,0)">

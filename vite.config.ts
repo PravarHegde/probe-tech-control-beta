@@ -76,12 +76,12 @@ export default defineConfig({
         buildReleaseInfo(),
         vue(),
         version(),
-        checker({
+        /*checker({
             typescript: {
                 root: path.resolve(__dirname),
                 buildMode: false,
             },
-        }),
+        }),*/
         Components({
             dts: true, // enabled by default if `typescript` is installed
             resolvers: [VuetifyResolver()],

@@ -22,7 +22,7 @@
                     :style="`height: ${topbarHeight}px`"
                     :ripple="false">
                     <img v-if="sidebarLogo" :src="sidebarLogo" :style="logoCssVars" class="nav-logo" alt="Logo" />
-                    <mainsail-logo v-else :color="logoColor" :style="logoCssVars" class="nav-logo" :ripple="false" />
+                    <brand-logo v-else :color="logoColor" :style="logoCssVars" class="nav-logo" :ripple="false" />
                     <span v-if="navigationStyle !== 'iconsOnly'" class="text-h6 font-weight-regular text-truncate">
                         {{ printerName }}
                     </span>
@@ -47,7 +47,7 @@ import BaseMixin from '@/components/mixins/base'
 import TheSelectPrinterDialog from '@/components/TheSelectPrinterDialog.vue'
 import AboutDialog from '@/components/dialogs/AboutDialog.vue'
 import { navigationWidth, topbarHeight } from '@/store/variables'
-import MainsailLogo from '@/components/ui/MainsailLogo.vue'
+import BrandLogo from '@/components/ui/BrandLogo.vue'
 import SidebarItem from '@/components/ui/SidebarItem.vue'
 import NavigationMixin from '@/components/mixins/navigation'
 import ThemeMixin from '@/components/mixins/theme'
@@ -57,7 +57,7 @@ import ThemeMixin from '@/components/mixins/theme'
         SidebarItem,
         TheSelectPrinterDialog,
         AboutDialog,
-        MainsailLogo,
+        BrandLogo,
     },
 })
 export default class TheSidebar extends Mixins(NavigationMixin, BaseMixin, ThemeMixin) {
@@ -141,7 +141,7 @@ export default class TheSidebar extends Mixins(NavigationMixin, BaseMixin, Theme
 }
 
 .nav-logo {
-    height: 32px;
+    height: 80px;
 }
 
 .menu-item-icon {

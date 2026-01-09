@@ -5,7 +5,7 @@
             <router-link to="/">
                 <inline-svg v-if="sidebarLogo && isSvgLogo" :src="sidebarLogo" :class="logoClasses" />
                 <img v-else-if="sidebarLogo" :src="sidebarLogo" :class="logoClasses" alt="Logo" />
-                <mainsail-logo v-else :color="logoColor" :class="logoClasses" router to="/" :ripple="false" />
+                <brand-logo v-else :color="logoColor" :class="logoClasses" router to="/" :ripple="false" />
             </router-link>
             <v-toolbar-title class="text-no-wrap ml-0 pl-2 mr-2">{{ printerName }}</v-toolbar-title>
             <printer-selector v-if="countPrinters" />
@@ -84,7 +84,7 @@ import TheTopCornerMenu from '@/components/TheTopCornerMenu.vue'
 import TheSettingsMenu from '@/components/TheSettingsMenu.vue'
 import Panel from '@/components/ui/Panel.vue'
 import PrinterSelector from '@/components/ui/PrinterSelector.vue'
-import MainsailLogo from '@/components/ui/MainsailLogo.vue'
+import BrandLogo from '@/components/ui/BrandLogo.vue'
 import TheNotificationMenu from '@/components/notifications/TheNotificationMenu.vue'
 import { topbarHeight } from '@/store/variables'
 import { mdiAlertOctagonOutline, mdiContentSave, mdiFileUpload, mdiClose, mdiCloseThick } from '@mdi/js'
@@ -109,7 +109,7 @@ type uploadSnackbar = {
         TheSettingsMenu,
         TheTopCornerMenu,
         PrinterSelector,
-        MainsailLogo,
+        BrandLogo,
         TheNotificationMenu,
     },
 })
@@ -335,7 +335,7 @@ export default class TheTopbar extends Mixins(BaseMixin, ThemeMixin) {
 }
 ::v-deep .topbar .nav-logo {
     width: auto;
-    height: 32px;
+    height: 80px;
 }
 /*noinspection CssUnusedSymbol*/
 .topbar .v-btn.v-btn--icon {

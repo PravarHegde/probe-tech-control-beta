@@ -11,7 +11,7 @@ export const getters: GetterTree<RootState, any> = {
     },
 
     getTitle: (state, getters) => {
-        if (!state.socket?.isConnected) return 'Mainsail'
+        if (!state.socket?.isConnected) return 'Probe Tech Control'
         if (state.server?.klippy_state !== 'ready') return i18n.t('App.Titles.Error')
 
         // get printer_state
@@ -64,7 +64,7 @@ export const getters: GetterTree<RootState, any> = {
             return output
         }
 
-        return state.gui?.general.printername ?? state.printer?.hostname ?? 'Mainsail'
+        return state.gui?.general.printername ?? state.printer?.hostname ?? 'Probe Tech Control'
     },
 
     getDependencies: (state) => {

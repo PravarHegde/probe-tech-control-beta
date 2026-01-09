@@ -6,7 +6,7 @@
             </v-icon>
         </template>
         <v-container class="version-container pa-0">
-            <div><img height="12" src="/img/logo.svg" alt="mainsail-logo" /></div>
+            <div><img height="12" src="@/assets/logo.svg" alt="brand-logo" /></div>
             <div>v{{ mainsailVersion }}</div>
             <div>
                 <v-icon small class="moonraker-logo">{{ mdiMoonWaningCrescent }}</v-icon>

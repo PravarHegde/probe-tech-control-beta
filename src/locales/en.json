@@ -757,7 +757,7 @@
             "SetupConsole": "Setup Console"
         },
         "MinSettingsPanel": {
-            "IncludeMainsailCfg": "Make sure you include the mainsail.cfg in your printer.cfg file.",
+            "IncludeMainsailCfg": "Make sure you include the probe_tech.cfg in your printer.cfg file.",
             "IsNotDefinedInConfig": "is not defined in config.",
             "MissingConfiguration": "Missing configuration",
             "MoreInformation": "more information"

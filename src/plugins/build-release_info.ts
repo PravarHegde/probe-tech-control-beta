@@ -19,7 +19,7 @@ export default function buildReleaseInfo(): PluginOption {
                 )
                 await releaseInfoFile.writeFile(
                     JSON.stringify({
-                        project_name: 'mainsail',
+                        project_name: 'Probe Tech Control',
                         project_owner: 'mainsail-crew',
                         version: `v${versionIdentifier}`,
                     })

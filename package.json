@@ -97,7 +97,7 @@
         "sass": "~1.32",
         "start-server-and-test": "^2.0.5",
         "stream-browserify": "^3.0.0",
-        "typescript": "^4.9.5",
+        "typescript": "^5.3.3",
         "unplugin-vue-components": "^0.22.12",
         "vite": "^5.4.21",
         "vite-plugin-checker": "^0.8.0",
