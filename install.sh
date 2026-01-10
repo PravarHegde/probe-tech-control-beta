@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Probe Tech Control Advanced Installer and Manager
-# Version 7: Multi-Instance Edition (Deep Detect, Instance Creator)
+# Version 8: Full Suite (Auto-Service Cloning, Restore, Deep Detect)
 
 # --- VARIABLES ---
 HOME_DIR="${HOME}"
@@ -31,7 +31,7 @@ get_ip() {
     hostname -I | awk '{print $1}'
 }
 
-# Improved Instance Detection: Looks DEEPER for printer.cfg (maxdepth 4 covers ~/printer_data/config/printer.cfg)
+# Improved Instance Detection: Looks DEEPER for printer.cfg (maxdepth 4)
 get_instances() {
     find "${HOME}" -maxdepth 4 -name "printer.cfg" -print0 | xargs -0 -I {} dirname {} | sort | uniq
 }
@@ -45,7 +45,6 @@ select_instance() {
     
     if [ ${#instances[@]} -eq 0 ]; then
         echo -e "${RED}No Klipper configurations found! (Checked for printer.cfg in ~/*)${NC}"
-        # Fallback to creating a default directory if none exist?
         echo -e "${SILVER}Creating default: ~/printer_data/config${NC}"
         mkdir -p "${HOME}/printer_data/config"
         touch "${HOME}/printer_data/config/printer.cfg"
@@ -67,9 +66,7 @@ select_instance() {
         return 1
     fi
     
-    # Return selected path
     SELECTED_CONF_DIR="${instances[$((sel-1))]}"
-    # SELECTED_INSTANCE is the parent of the config dir, e.g. ~/printer_data
     SELECTED_INSTANCE="$(dirname "$SELECTED_CONF_DIR")"
     
     echo -e "Selected Config: ${GREEN}${SELECTED_CONF_DIR}${NC}"
@@ -81,7 +78,6 @@ check_status() {
     
     # Check Probe Tech Config
     local installed=0
-    # Use cached instances if possible, but mapfile is fast enough.
     mapfile -t instances < <(get_instances)
     for inst in "${instances[@]}"; do
         if [ -f "$inst/probe_tech.cfg" ]; then
@@ -128,14 +124,12 @@ check_status() {
 
 wifi_status() {
     echo -e "${GOLD}--- Network Status ---${NC}"
-    # Use cat to avoid pager execution (less)
     nmcli -p device show wlan0 2>/dev/null | grep -E "IP4.ADDRESS|GENERAL.CONNECTION" | cat
     echo ""
 }
 
 connect_wifi() {
     echo -e "${BLUE}Scanning for networks... (Please wait)${NC}"
-    # Get SSIDs
     mapfile -t networks < <(nmcli -f SSID,BARS,SIGNAL device wifi list | tail -n +2 | grep -v "^--" | awk '{$1=$1};1' | uniq | head -n 15)
     
     if [ ${#networks[@]} -eq 0 ]; then
@@ -173,10 +167,7 @@ create_hotspot() {
     read -p "Enter Hotspot SSID Name: " hs_ssid
     read -s -p "Enter Hotspot Password (min 8 chars): " hs_pass
     echo ""
-    echo ""
-    echo "1) WPA2 Security (Recommended)"
-    echo "2) Open (No Password)"
-    read -p "Select Security: " sec
+    read -p "Select Security (1=WPA2, 2=Open): " sec
     
     if [ "$sec" == "2" ]; then
          echo -e "${YELLOW}Creating Open Hotspot...${NC}"
@@ -243,7 +234,6 @@ install_moonraker() {
 }
 
 install_probe_tech() {
-    # 1. Select Instance
     if ! select_instance; then return; fi
     
     PROBE_CFG="${SELECTED_CONF_DIR}/probe_tech.cfg"
@@ -252,7 +242,6 @@ install_probe_tech() {
     
     echo -e "${GOLD}Configuring instance at: $SELECTED_CONF_DIR${NC}"
 
-    # 2. Config Copy
     if [ -f "probe_tech.cfg" ]; then
         cp probe_tech.cfg "$PROBE_CFG"
         echo -e "${GREEN}✓ probe_tech.cfg copied${NC}"
@@ -260,7 +249,6 @@ install_probe_tech() {
         echo -e "${RED}Error: probe_tech.cfg source missing.${NC}"
     fi
 
-    # 3. Printer.cfg Link
     if [ -f "$PRINTER_CFG" ]; then
         if ! grep -q "include probe_tech.cfg" "$PRINTER_CFG"; then
             sed -i '1s/^/[include probe_tech.cfg]\n/' "$PRINTER_CFG"
@@ -272,7 +260,6 @@ install_probe_tech() {
         echo -e "${RED}Warning: printer.cfg not found in ${SELECTED_CONF_DIR}${NC}"
     fi
 
-    # 4. Moonraker Update Manager
     if [ -f "$MOONRAKER_CONF" ]; then
         if ! grep -q "\[update_manager client probe_tech\]" "$MOONRAKER_CONF"; then
              cat <<EOF >> "$MOONRAKER_CONF"
@@ -289,7 +276,6 @@ EOF
         echo -e "${RED}Warning: moonraker.conf not found in ${SELECTED_CONF_DIR}${NC}"
     fi
 
-    # 5. Service
     echo -e "${GOLD}Setting up Service...${NC}"
     if [ -f "probe-tech.service" ]; then
          sed "s/{USER}/${USER}/g" probe-tech.service > /tmp/probe-tech.service
@@ -305,7 +291,7 @@ EOF
 
 create_instance() {
     print_box "CREATE NEW PRINTER INSTANCE" "${BLUE}"
-    echo -e "${SILVER}This will create a new configuration folder and systemd services.${NC}"
+    echo -e "${SILVER}This will create a new config folder and clone systemd services.${NC}"
     read -p "Enter Instance Name (e.g. printer_2): " inst_name
     
     if [ -z "$inst_name" ]; then echo "Name cannot be empty."; return; fi
@@ -315,9 +301,20 @@ create_instance() {
     CONF_DIR="${INST_DIR}/config"
     LOG_DIR="${INST_DIR}/logs"
     GCODE_DIR="${INST_DIR}/gcodes"
+    SYS_DIR="${INST_DIR}/systemd"
+    COMMS_DIR="${INST_DIR}/comms"
     
     echo -e "${GOLD}Creating folders in $INST_DIR...${NC}"
-    mkdir -p "$CONF_DIR" "$LOG_DIR" "$GCODE_DIR"
+    mkdir -p "$CONF_DIR" "$LOG_DIR" "$GCODE_DIR" "$SYS_DIR" "$COMMS_DIR"
+    
+    # Klipper/Moonraker Envs
+    cat <<EOF > "${SYS_DIR}/klipper.env"
+KLIPPER_ARGS="${HOME}/klipper/klippy/klippy.py ${CONF_DIR}/printer.cfg -I ${COMMS_DIR}/klippy.serial -l ${LOG_DIR}/klippy.log -a ${COMMS_DIR}/klippy.sock"
+EOF
+
+    cat <<EOF > "${SYS_DIR}/moonraker.env"
+MOONRAKER_ARGS="${HOME}/moonraker/moonraker/moonraker.py -d ${INST_DIR}"
+EOF
     
     # Create Basic Configs
     if [ ! -f "${CONF_DIR}/printer.cfg" ]; then
@@ -329,15 +326,69 @@ create_instance() {
         cat <<EOF > "${CONF_DIR}/moonraker.conf"
 [server]
 host: 0.0.0.0
+# Automatic port increment logic would be better, but fixed manual change is safer for now.
 port: 7126
-# Incremented port? User might need to edit.
 EOF
-        echo -e "${GREEN}✓ Created moonraker.conf (Port 7126 - check manually)${NC}"
+        echo -e "${GREEN}✓ Created moonraker.conf (Port 7126 set)${NC}"
     fi
 
-    echo -e "${GREEN}Instance Folder Created!${NC}"
-    echo -e "${YELLOW}Note: To install Klipper/Moonraker services for this instance, additional manual setup is required (service file cloning).${NC}"
-    echo -e "${YELLOW}For now, you can use this instance for Config storage.${NC}"
+    echo -e "${GOLD}Creating Systemd Services (Requires Sudo)...${NC}"
+    
+    # Create Klipper Service
+    cat <<EOF > /tmp/klipper-${inst_name}.service
+[Unit]
+Description=Klipper for ${inst_name}
+Documentation=https://www.klipper3d.org/
+After=network-online.target
+Wants=udev.target
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+Type=simple
+User=${USER}
+RemainAfterExit=yes
+WorkingDirectory=${HOME}/klipper
+EnvironmentFile=${SYS_DIR}/klipper.env
+ExecStart=${HOME}/klippy-env/bin/python \$KLIPPER_ARGS
+Restart=always
+RestartSec=10
+EOF
+    sudo mv /tmp/klipper-${inst_name}.service /etc/systemd/system/klipper-${inst_name}.service
+
+    # Create Moonraker Service
+    cat <<EOF > /tmp/moonraker-${inst_name}.service
+[Unit]
+Description=Moonraker for ${inst_name}
+Documentation=https://moonraker.readthedocs.io/
+Requires=network-online.target
+After=network-online.target
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+Type=simple
+User=${USER}
+SupplementaryGroups=moonraker-admin
+RemainAfterExit=yes
+WorkingDirectory=${HOME}/moonraker
+EnvironmentFile=${SYS_DIR}/moonraker.env
+ExecStart=${HOME}/moonraker-env/bin/python \$MOONRAKER_ARGS
+Restart=always
+RestartSec=10
+EOF
+    sudo mv /tmp/moonraker-${inst_name}.service /etc/systemd/system/moonraker-${inst_name}.service
+
+    # Reload and Enable
+    sudo systemctl daemon-reload
+    sudo systemctl enable klipper-${inst_name}
+    sudo systemctl enable moonraker-${inst_name}
+    sudo systemctl start klipper-${inst_name}
+    sudo systemctl start moonraker-${inst_name}
+    
+    echo -e "${GREEN}✓ Instance Created & Services Started!${NC}"
     read -p "Press Enter..."
 }
 
@@ -351,13 +402,86 @@ install_all() {
     read -p "Press Enter..."
 }
 
+# --- BACKUP & RESTORE ---
+
+backup_config() {
+    if select_instance; then
+        mkdir -p "$BACKUP_DIR"
+        name=$(basename "$SELECTED_INSTANCE") # e.g. printer_data
+        ts=$(date +%Y%m%d_%H%M%S)
+        tar -czf "${BACKUP_DIR}/${name}_${ts}.tar.gz" -C "$(dirname "$SELECTED_INSTANCE")" "$name"
+        echo -e "${GREEN}Backup saved to ${BACKUP_DIR}/${name}_${ts}.tar.gz${NC}"
+        read -p "Press Enter..."
+    fi
+}
+
+restore_backup() {
+    echo -e "${GOLD}--- RESTORE BACKUP ---${NC}"
+    if [ ! -d "$BACKUP_DIR" ]; then
+        echo -e "${RED}No backup directory found at $BACKUP_DIR${NC}"
+        read -p "Press Enter..."
+        return
+    fi
+
+    # List files
+    mapfile -t backups < <(ls "$BACKUP_DIR"/*.tar.gz 2>/dev/null)
+    if [ ${#backups[@]} -eq 0 ]; then
+        echo -e "${RED}No backup files found.${NC}"
+        read -p "Press Enter..."
+        return
+    fi
+    
+    i=1
+    for bk in "${backups[@]}"; do
+        echo "$i) $(basename "$bk")"
+        ((i++))
+    done
+    
+    read -p "Select Backup File: " bsel
+    if [[ ! "$bsel" =~ ^[0-9]+$ ]] || [ "$bsel" -lt 1 ] || [ "$bsel" -gt ${#backups[@]} ]; then
+        echo "Invalid selection."
+        return
+    fi
+    SELECTED_BACKUP="${backups[$((bsel-1))]}"
+    
+    echo -e "${BLUE}Where to restore? (Warning: Overwrites)${NC}"
+    echo "1) Restore to Original Folder (Auto-detect)"
+    echo "2) Cancel"
+    read -p "Select: " rsel
+    
+    if [ "$rsel" == "1" ]; then
+        # Restore to HOME
+        echo -e "${YELLOW}Restoring to $HOME...${NC}"
+        tar -xzf "$SELECTED_BACKUP" -C "$HOME"
+        echo -e "${GREEN}Restore Complete.${NC}"
+    fi
+    read -p "Press Enter..."
+}
+
+menu_backup() {
+    while true; do
+        clear
+        print_box "BACKUP & RESTORE" "${BLUE}"
+        echo "1) Backup Instance Configuration"
+        echo "2) Restore Configuration"
+        echo "3) Back to Main Menu"
+        echo ""
+        read -p "Select: " c
+        case $c in
+            1) backup_config ;;
+            2) restore_backup ;;
+            3) return ;;
+        esac
+    done
+}
+
 # --- SUBMENUS ---
 
 menu_remove() {
     while true; do
         clear
         print_box "REMOVE COMPONENTS" "${RED}"
-        echo "1) Remove Probe Tech Config"
+        echo "1) Remove Probe Tech Control (Complete)"
         echo "2) Uninstall Moonraker (Destructive)"
         echo "3) Uninstall Klipper (Destructive)"
         echo "4) Back"
@@ -416,17 +540,6 @@ menu_service() {
     done
 }
 
-backup_config() {
-    if select_instance; then
-        mkdir -p "$BACKUP_DIR"
-        name=$(basename "$SELECTED_INSTANCE") # e.g. printer_data
-        ts=$(date +%Y%m%d_%H%M%S)
-        tar -czf "${BACKUP_DIR}/${name}_${ts}.tar.gz" -C "$(dirname "$SELECTED_INSTANCE")" "$name"
-        echo -e "${GREEN}Backup saved to ${BACKUP_DIR}/${name}_${ts}.tar.gz${NC}"
-        read -p "Press Enter..."
-    fi
-}
-
 manual_install_menu() {
     while true; do
         clear
@@ -468,7 +581,7 @@ while true; do
         1) install_all ;;
         2) manual_install_menu ;;
         3) menu_remove ;;
-        4) backup_config ;;
+        4) menu_backup ;;
         5) menu_service ;;
         6) menu_wifi ;;
         7) exit 0 ;;
