@@ -79,9 +79,18 @@ select_instance() {
 check_status() {
     print_box "PROBE TECH CONTROL - ADVANCED MANAGER" "${BLUE}"
     
-    # Check Probe Tech Config (Global check, or check specifically for 'default' instance if single?)
-    # We'll check if ANY printer.cfg has our include, roughly.
-    if grep -r "include probe_tech.cfg" "${HOME}" --include="printer.cfg" >/dev/null 2>&1; then
+    # Check Probe Tech Config
+    local installed=0
+    # Use cached instances if possible, but mapfile is fast enough with maxdepth 2
+    mapfile -t instances < <(get_instances)
+    for inst in "${instances[@]}"; do
+        if [ -f "$inst/probe_tech.cfg" ]; then
+            installed=1
+            break
+        fi
+    done
+
+    if [ $installed -eq 1 ]; then
          echo -e "Probe Tech Control: ${GREEN}Installed${NC}"
     else
          echo -e "Probe Tech Control: ${SILVER}Not Detected${NC}"
