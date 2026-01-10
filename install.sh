@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Probe Tech Control Advanced Installer and Manager
-# Version 8: Full Suite (Auto-Service Cloning, Restore, Deep Detect)
+# Version 8.1: Full Suite (UI Tweaks: Remove All Option)
 
 # --- VARIABLES ---
 HOME_DIR="${HOME}"
@@ -475,44 +475,70 @@ menu_backup() {
     done
 }
 
-# --- SUBMENUS ---
+# --- REMOVAL ACTIONS ---
+
+do_remove_probe() {
+    if select_instance; then
+        rm -f "${SELECTED_CONF_DIR}/probe_tech.cfg"
+        sed -i '/\[include probe_tech.cfg\]/d' "${SELECTED_CONF_DIR}/printer.cfg" 2>/dev/null
+        echo -e "${GREEN}Removed config links.${NC}"
+    fi
+}
+
+do_remove_moonraker() {
+    read -p "Uninstall Moonraker? (y/n): " y
+    if [ "$y" = "y" ]; then
+        sudo systemctl stop moonraker 2>/dev/null
+        rm -rf "${HOME}/moonraker"
+        echo "Moonraker removed."
+    fi
+}
+
+do_remove_klipper() {
+    read -p "Uninstall Klipper? (y/n): " y
+    if [ "$y" = "y" ]; then
+        sudo systemctl stop klipper 2>/dev/null
+        rm -rf "${HOME}/klipper"
+        echo "Klipper removed."
+    fi
+}
+
+do_remove_all() {
+    echo -e "${RED}WARNING: This will remove ALL components!${NC}"
+    read -p "Are you sure? (y/n): " confirm
+    if [[ "$confirm" == "y" ]]; then
+        echo -e "${GOLD}Removing Probe Tech Config...${NC}"
+        # For remove all, we might want to clean all instances, but for now let's just do base components + specific instance config if requested. 
+        # Actually standard practice is remove the big services and maybe the config files.
+        do_remove_moonraker
+        do_remove_klipper
+        # Optional: remove probe tech service
+         sudo systemctl stop probe-tech 2>/dev/null
+         sudo systemctl disable probe-tech 2>/dev/null
+         rm -rf "${HOME}/probe-tech-control"
+         echo "Probe Tech Control removed."
+         echo -e "${GREEN}Complete Uninstallation Finished.${NC}"
+    fi
+    read -p "Press Enter..."
+}
 
 menu_remove() {
     while true; do
         clear
         print_box "REMOVE COMPONENTS" "${RED}"
-        echo "1) Remove Probe Tech Control (Complete)"
-        echo "2) Uninstall Moonraker (Destructive)"
-        echo "3) Uninstall Klipper (Destructive)"
-        echo "4) Back"
+        echo "1) Uninstall EVERYTHING (Probe Tech + Moonraker + Klipper)"
+        echo "2) Remove Probe Tech Config (Single Instance)"
+        echo "3) Uninstall Moonraker (Destructive)"
+        echo "4) Uninstall Klipper (Destructive)"
+        echo "5) Back"
         echo ""
         read -p "Select: " c
         case $c in
-            1) 
-                if select_instance; then
-                    rm -f "${SELECTED_CONF_DIR}/probe_tech.cfg"
-                    sed -i '/\[include probe_tech.cfg\]/d' "${SELECTED_CONF_DIR}/printer.cfg" 2>/dev/null
-                    echo -e "${GREEN}Removed config links.${NC}"
-                    read -p "Press Enter..."
-                fi
-                ;;
-            2) 
-                read -p "Uninstall Moonraker? (y/n): " y
-                if [ "$y" = "y" ]; then
-                    sudo systemctl stop moonraker 2>/dev/null
-                    rm -rf "${HOME}/moonraker"
-                    echo "Moonraker removed."
-                fi
-                ;;
-            3)
-                read -p "Uninstall Klipper? (y/n): " y
-                if [ "$y" = "y" ]; then
-                    sudo systemctl stop klipper 2>/dev/null
-                    rm -rf "${HOME}/klipper"
-                    echo "Klipper removed."
-                fi
-                ;;
-            4) return ;;
+            1) do_remove_all ;;
+            2) do_remove_probe; read -p "Press Enter..." ;;
+            3) do_remove_moonraker; read -p "Press Enter..." ;;
+            4) do_remove_klipper; read -p "Press Enter..." ;;
+            5) return ;;
         esac
     done
 }
