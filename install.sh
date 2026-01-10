@@ -344,6 +344,51 @@ path: ~/probe-tech-control
 EOF
              echo -e "${GREEN}✓ Moonraker Update Manager added${NC}"
         fi
+
+        # --- NEW: UNBLOCK CONNECTIVITY (CORS) ---
+        echo -e "${GOLD}Checking Moonraker CORs settings...${NC}"
+        # Ensure [authorization] section exists
+        if ! grep -q "\[authorization\]" "$MOONRAKER_CONF"; then
+            echo -e "\n[authorization]" >> "$MOONRAKER_CONF"
+        fi
+        
+        # Add cors_domains if missing, or add * to it
+        if ! grep -q "cors_domains:" "$MOONRAKER_CONF"; then
+            echo -e "cors_domains:\n    *\n    *.lan\n    *.local" >> "$MOONRAKER_CONF"
+             echo -e "${GREEN}✓ Added CORS domains to moonraker.conf${NC}"
+        elif ! grep -E "^\s+\*$" "$MOONRAKER_CONF" > /dev/null; then
+            # Use sed to add * under cors_domains:
+            sed -i "/cors_domains:/a \    *" "$MOONRAKER_CONF"
+            echo -e "${GREEN}✓ Enabled wildcard CORS in moonraker.conf${NC}"
+        fi
+
+        # Add trusted_clients if missing
+        if ! grep -q "trusted_clients:" "$MOONRAKER_CONF"; then
+             cat <<EOF >> "$MOONRAKER_CONF"
+trusted_clients:
+    127.0.0.1
+    10.0.0.0/8
+    127.0.0.0/8
+    169.254.0.0/16
+    172.16.0.0/12
+    192.168.0.0/16
+    FE80::/10
+    ::1/128
+EOF
+             echo -e "${GREEN}✓ Added trusted_clients to moonraker.conf${NC}"
+        fi
+
+        # --- NEW: UNBLOCK CONNECTIVITY (UDS) ---
+        if ! grep -q "klippy_uds_address:" "$MOONRAKER_CONF"; then
+             # Try to find the comms dir
+             COMMS_DIR="$(dirname "$SELECTED_CONF_DIR")/comms"
+             if [ -d "$COMMS_DIR" ]; then
+                 UDS_PATH="${COMMS_DIR}/klippy.sock"
+                 # Add klippy_uds_address under [server]
+                 sed -i "/\[server\]/a klippy_uds_address: ${UDS_PATH}" "$MOONRAKER_CONF"
+                 echo -e "${GREEN}✓ Set klippy_uds_address in moonraker.conf${NC}"
+             fi
+        fi
     else
         echo -e "${RED}Warning: moonraker.conf not found.${NC}"
     fi
@@ -415,6 +460,30 @@ EOF
 [server]
 host: 0.0.0.0
 port: ${NEXT_PORT}
+klippy_uds_address: ${COMMS_DIR}/klippy.sock
+
+[authorization]
+cors_domains:
+    *
+    *.lan
+    *.local
+trusted_clients:
+    127.0.0.1
+    10.0.0.0/8
+    127.0.0.0/8
+    169.254.0.0/16
+    172.16.0.0/12
+    192.168.0.0/16
+    FE80::/10
+    ::1/128
+
+[update_manager]
+
+[update_manager client probe_tech]
+type: web
+channel: stable
+repo: PravarHegde/probe-tech-control
+path: ~/probe-tech-control
 EOF
         echo -e "${GREEN}✓ Created moonraker.conf (Auto-Assigned Port: ${CYAN}${NEXT_PORT}${GREEN})${NC}"
     fi

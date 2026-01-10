@@ -1,11 +1,11 @@
 <p align="center">
   <a>
-    <img src="https://raw.githubusercontent.com/mainsail-crew/docs/master/assets/img/logo.png" alt='Mainsail logo' height="152">
-    <h1 align="center">Mainsail</h1>
+    <img src="logo.svg" alt='Probe Tech Control logo' height="152">
+    <h1 align="center">Probe Tech Control</h1>
   </a>
 </p>
 <p align="center">
-  Makes Klipper more accessible by adding a lightweight, responsive web user interface, centred around an intuitive and consistent design philosophy.
+  Advanced dashboard for Klipper 3D printer firmware, featuring multi-instance management and custom probes.
 </p>
 <p align="center">
   <a aria-label="Downloads" href="https://github.com/mainsail-crew/mainsail/releases">
@@ -40,15 +40,18 @@
 
 ## Getting Started
 
-Visit [docs.mainsail.xyz/setup](https://docs.mainsail.xyz/setup) to get started with Mainsail.
+To install Probe Tech Control on your Raspberry Pi or Linux system:
 
-Mainsail is also available in remote mode on [http://my.mainsail.xyz](http://my.mainsail.xyz). Find
-out [more](https://docs.mainsail.xyz/setup#mymainsailxyz).
+1. Download `install.sh` and `probe-tech-control.zip`.
+2. Run the installer:
+   ```bash
+   chmod +x install.sh
+   ./install.sh
+   ```
+3. Follow the on-screen menu to "Auto-Install" or manage instances.
 
 ## Documentation
-
-Visit [docs.mainsail.xyz](https://docs.mainsail.xyz) to view the full documentation.  
-You can find the latest release notes [here](https://github.com/mainsail-crew/mainsail/releases).
+Refer to the `AGENTS.md` for detailed agent configuration or join our community for support.
 
 ## Screenshots
 

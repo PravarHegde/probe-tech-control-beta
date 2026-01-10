@@ -6,7 +6,7 @@ After=network.target
 Type=simple
 User={USER}
 WorkingDirectory=/home/{USER}/probe-tech-control
-ExecStart=/usr/bin/python3 -m http.server 8080 --directory dist
+ExecStart=/usr/bin/python3 -m http.server 8080
 Restart=always
 RestartSec=10
 

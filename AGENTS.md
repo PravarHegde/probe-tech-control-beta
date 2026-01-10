@@ -6,7 +6,7 @@
 
 ## Project Overview
 
-Mainsail is a Vue 2 + TypeScript web interface for Klipper 3D printer firmware. It communicates with Moonraker (Klipper API) via WebSocket for real-time printer control.
+Probe Tech Control is a Vue 2 + TypeScript web interface for Klipper 3D printer firmware. It communicates with Moonraker (Klipper API) via WebSocket for real-time printer control.
 
 ## Commands
 
