@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Probe Tech Control Advanced Installer and Manager
-# A KIAUH-like system for managing Klipper/Moonraker/Probe Tech instances
+# Version 5: Professional Edition (Box UI, WiFi, Auto-Detect)
 
 # --- VARIABLES ---
 HOME_DIR="${HOME}"
@@ -11,7 +11,7 @@ BACKUP_DIR="${HOME}/probe_tech_backups"
 
 # Colors (Blue, Silver/White, Gold)
 BLUE='\033[1;34m'
-SILVER='\033[1;37m' # Bright White matches "Silver" best in terminal
+SILVER='\033[1;37m'
 GOLD='\033[1;33m'
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -19,35 +19,44 @@ NC='\033[0m'
 
 # --- UTILS ---
 
-print_header() {
-    clear
-    echo -e "${BLUE}=================================================${NC}"
-    echo -e "${BLUE}      PROBE TECH CONTROL - ADVANCED MANAGER      ${NC}"
-    echo -e "${BLUE}=================================================${NC}"
-    echo ""
+print_box() {
+    local text="$1"
+    local color="$2"
+    echo -e "${BLUE}=====================================================================${NC}"
+    echo -e "${color}      $text      ${NC}"
+    echo -e "${BLUE}=====================================================================${NC}"
 }
 
 get_ip() {
     hostname -I | awk '{print $1}'
 }
 
-# Returns array of printer instances (dirs starting with printer_data or printer_X_data)
+# Improved Instance Detection: Looks for directories containing printer.cfg
 get_instances() {
-    find "${HOME}" -maxdepth 1 -type d -name "printer*_data" | sort
+    find "${HOME}" -maxdepth 2 -name "printer.cfg" -print0 | xargs -0 -I {} dirname {} | sort | uniq
 }
 
+# Shows a list of valid config directories to pick from
 select_instance() {
-    echo -e "${GOLD}Select Klipper Instance:${NC}"
-    instances=($(get_instances))
+    echo -e "${GOLD}Select Klipper Instance (Config Folder):${NC}"
+    
+    # Capture output of get_instances into array
+    mapfile -t instances < <(get_instances)
     
     if [ ${#instances[@]} -eq 0 ]; then
-        echo -e "${RED}No Klipper instances found! (folder pattern: ~/printer*_data)${NC}"
-        return 1
+        echo -e "${RED}No Klipper configurations found! (Checked for printer.cfg in ~/*)${NC}"
+        # Fallback to creating a default directory if none exist?
+        echo -e "${SILVER}Creating default: ~/printer_data/config${NC}"
+        mkdir -p "${HOME}/printer_data/config"
+        instances=("${HOME}/printer_data/config")
     fi
 
     i=1
     for inst in "${instances[@]}"; do
-        echo "$i) $(basename "$inst")"
+        # Show parent folder name usually (e.g. printer_data/config -> printer_data)
+        parent=$(basename "$(dirname "$inst")")
+        name=$(basename "$inst")
+        echo "$i) $parent/$name"
         ((i++))
     done
     
@@ -58,117 +67,156 @@ select_instance() {
         return 1
     fi
     
-    # Return selected path relative to 0-index array
-    SELECTED_INSTANCE="${instances[$((sel-1))]}"
-    SELECTED_CONF_DIR="${SELECTED_INSTANCE}/config"
-    echo -e "Selected: ${GREEN}${SELECTED_INSTANCE}${NC}"
+    # Return selected path
+    SELECTED_CONF_DIR="${instances[$((sel-1))]}"
+    # SELECTED_INSTANCE is the parent of the config dir, e.g. ~/printer_data
+    SELECTED_INSTANCE="$(dirname "$SELECTED_CONF_DIR")"
+    
+    echo -e "Selected Config: ${GREEN}${SELECTED_CONF_DIR}${NC}"
     return 0
 }
 
 check_status() {
-    # Check Probe Tech Config
-    if [ -f "${HOME}/probe-tech-control/probe_tech.cfg" ]; then
-        # Check if linked in any printer.cfg? Hard to say for multi-instance globally.
-        # We check locally deployed file presence
-         echo -e "${SILVER}Interface:${NC}     ${GREEN}Installed${NC}"
+    print_box "PROBE TECH CONTROL - ADVANCED MANAGER" "${BLUE}"
+    
+    # Check Probe Tech Config (Global check, or check specifically for 'default' instance if single?)
+    # We'll check if ANY printer.cfg has our include, roughly.
+    if grep -r "include probe_tech.cfg" "${HOME}" --include="printer.cfg" >/dev/null 2>&1; then
+         echo -e "Probe Tech Control: ${GREEN}Installed${NC}"
     else
-         echo -e "${SILVER}Interface:${NC}     ${RED}Not Installed${NC}"
-    fi
-
-    # Check Service
-    if systemctl is-active --quiet probe-tech; then
-        echo -e "${SILVER}Service:${NC}       ${GREEN}Running${NC}"
-    else
-        echo -e "${SILVER}Service:${NC}       ${RED}Stopped${NC}"
+         echo -e "Probe Tech Control: ${SILVER}Not Detected${NC}"
     fi
 
     # Check Moonraker
     if [ -d "${HOME}/moonraker" ]; then
-        echo -e "${SILVER}Moonraker:${NC}     ${GREEN}Installed${NC}"
+        echo -e "Moonraker:          ${GREEN}Installed${NC}"
     else
-        echo -e "${SILVER}Moonraker:${NC}     ${RED}Not Installed${NC}"
+        echo -e "Moonraker:          ${SILVER}Not Installed${NC}"
     fi
 
     # Check Klipper
     if [ -d "${HOME}/klipper" ]; then
-        echo -e "${SILVER}Klipper:${NC}       ${GREEN}Installed${NC}"
+        echo -e "Klipper:            ${GREEN}Installed${NC}"
     else
-        echo -e "${SILVER}Klipper:${NC}       ${RED}Not Installed${NC}"
+        echo -e "Klipper:            ${SILVER}Not Installed${NC}"
     fi
-    echo ""
     
-    MY_IP=$(get_ip)
-    echo -e "${SILVER}Web Interface:${NC} ${GOLD}http://${MY_IP}:8080${NC}"
+    # Check Service
+    if systemctl is-active --quiet probe-tech; then
+        echo -e "Service:            ${GREEN}Running${NC}"
+    else
+        echo -e "Service:            ${RED}Stopped${NC}"
+    fi
+    
     echo ""
+    MY_IP=$(get_ip)
+    echo -e "Web Interface:      ${GOLD}http://${MY_IP}:8080${NC}"
+    echo -e "${BLUE}=====================================================================${NC}"
+    echo ""
+}
+
+# --- WIFI MODULE ---
+
+wifi_status() {
+    echo -e "${GOLD}--- Network Status ---${NC}"
+    nmcli -p device show wlan0 2>/dev/null | grep -E "IP4.ADDRESS|GENERAL.CONNECTION"
+    echo ""
+}
+
+menu_wifi() {
+    while true; do
+        clear
+        print_box "WIFI CONFIGURATION" "${GOLD}"
+        wifi_status
+        echo "1) Connect to WiFi Network"
+        echo "2) Show Network Info (LAN/Current)"
+        echo "3) Back to Main Menu"
+        echo ""
+        read -p "Select: " c
+        case $c in
+            1) 
+                echo -e "${SILVER}Scanning networks...${NC}"
+                nmcli device wifi list
+                read -p "Enter SSID Name: " ssid
+                read -s -p "Enter Password: " pass
+                echo ""
+                echo "Connecting..."
+                sudo nmcli device wifi connect "$ssid" password "$pass"
+                read -p "Press Enter..."
+                ;;
+            2)
+                ip addr show
+                read -p "Press Enter..."
+                ;;
+            3) return ;;
+        esac
+    done
 }
 
 # --- INSTALL ACTIONS ---
 
 install_klipper() {
-    echo -e "${GOLD}Installing Klipper (Standard)...${NC}"
-    if [ -d "${HOME}/klipper" ]; then
-        echo -e "${GREEN}Klipper repo detected.${NC}"
-    else
+    echo -e "${GOLD}Installing Klipper...${NC}"
+    if [ ! -d "${HOME}/klipper" ]; then
         cd "${HOME}"
         git clone https://github.com/Klipper3d/klipper.git
-    fi
-    # Run official script
-    if [ -f "${HOME}/klipper/scripts/install-octopi.sh" ]; then
-         ${HOME}/klipper/scripts/install-octopi.sh
+        if [ -f "${HOME}/klipper/scripts/install-octopi.sh" ]; then
+             ${HOME}/klipper/scripts/install-octopi.sh
+        fi
     else
-         echo -e "${RED}Installer script not found.${NC}"
+        echo -e "${GREEN}Klipper already present.${NC}"
     fi
-    read -p "Press Enter..."
+    # Just in case, ensure user is in tty group
+    sudo usermod -a -G tty,dialout $USER
 }
 
 install_moonraker() {
-    echo -e "${GOLD}Installing Moonraker (Standard)...${NC}"
-    if [ -d "${HOME}/moonraker" ]; then
-        echo -e "${GREEN}Moonraker repo detected.${NC}"
-    else
+    echo -e "${GOLD}Installing Moonraker...${NC}"
+    if [ ! -d "${HOME}/moonraker" ]; then
         cd "${HOME}"
         git clone https://github.com/Arksine/moonraker.git
-    fi
-    if [ -f "${HOME}/moonraker/scripts/install-moonraker.sh" ]; then
-         ${HOME}/moonraker/scripts/install-moonraker.sh
+        if [ -f "${HOME}/moonraker/scripts/install-moonraker.sh" ]; then
+             ${HOME}/moonraker/scripts/install-moonraker.sh
+        fi
     else
-         echo -e "${RED}Installer script not found.${NC}"
+         echo -e "${GREEN}Moonraker already present.${NC}"
     fi
-    read -p "Press Enter..."
 }
 
 install_probe_tech() {
+    # 1. Select Instance
     if ! select_instance; then return; fi
-    
-    echo -e "${GOLD}Installing Probe Tech for $(basename "$SELECTED_INSTANCE")...${NC}"
     
     PROBE_CFG="${SELECTED_CONF_DIR}/probe_tech.cfg"
     PRINTER_CFG="${SELECTED_CONF_DIR}/printer.cfg"
     MOONRAKER_CONF="${SELECTED_CONF_DIR}/moonraker.conf"
     
-    # 1. Config
+    echo -e "${GOLD}Configuring instance at: $SELECTED_CONF_DIR${NC}"
+
+    # 2. Config Copy
     if [ -f "probe_tech.cfg" ]; then
         cp probe_tech.cfg "$PROBE_CFG"
-        echo -e "${GREEN}✓ Copied probe_tech.cfg${NC}"
+        echo -e "${GREEN}✓ probe_tech.cfg copied${NC}"
     else
-        echo -e "${RED}Error: probe_tech.cfg missing in installer dir.${NC}"
-        read -p "Press Enter..."
-        return
+        echo -e "${RED}Error: probe_tech.cfg source missing.${NC}"
     fi
-    
-    # 2. Printer.cfg
+
+    # 3. Printer.cfg Link
     if [ -f "$PRINTER_CFG" ]; then
         if ! grep -q "include probe_tech.cfg" "$PRINTER_CFG"; then
+            # Insert at top
             sed -i '1s/^/[include probe_tech.cfg]\n/' "$PRINTER_CFG"
-            echo -e "${GREEN}✓ Included in printer.cfg${NC}"
+            echo -e "${GREEN}✓ Linked in printer.cfg${NC}"
         else
-            echo -e "${SILVER}Already link in printer.cfg${NC}"
+            echo -e "${SILVER}Link already exists.${NC}"
         fi
+    else
+        echo -e "${RED}Warning: printer.cfg not found in ${SELECTED_CONF_DIR}${NC}"
     fi
-    
-    # 3. Moonraker
+
+    # 4. Moonraker Update Manager
     if [ -f "$MOONRAKER_CONF" ]; then
-         if ! grep -q "\[update_manager client probe_tech\]" "$MOONRAKER_CONF"; then
+        if ! grep -q "\[update_manager client probe_tech\]" "$MOONRAKER_CONF"; then
              cat <<EOF >> "$MOONRAKER_CONF"
 
 [update_manager client probe_tech]
@@ -177,173 +225,91 @@ channel: stable
 repo: PravarHegde/probe-tech-control
 path: ~/probe-tech-control
 EOF
-             echo -e "${GREEN}✓ Configured Moonraker${NC}"
-         else
-             echo -e "${SILVER}Moonraker already configured${NC}"
-         fi
+             echo -e "${GREEN}✓ Moonraker Update Manager added${NC}"
+        fi
+    else
+        echo -e "${RED}Warning: moonraker.conf not found in ${SELECTED_CONF_DIR}${NC}"
     fi
-    
-    # 4. Service
-    echo -e "${GOLD}Installing Systemd Server Service...${NC}"
+
+    # 5. Service
+    echo -e "${GOLD}Setting up Service...${NC}"
     if [ -f "probe-tech.service" ]; then
          sed "s/{USER}/${USER}/g" probe-tech.service > /tmp/probe-tech.service
          sudo mv /tmp/probe-tech.service "/etc/systemd/system/probe-tech.service"
          sudo systemctl daemon-reload
          sudo systemctl enable probe-tech.service
          sudo systemctl start probe-tech.service
-         echo -e "${GREEN}✓ Service Active & Enabled on Boot${NC}"
+         echo -e "${GREEN}✓ Service Started & Enabled${NC}"
     fi
-    
-    MY_IP=$(get_ip)
-    echo -e "${GREEN}Done! Access at: http://${MY_IP}:8080${NC}"
-    read -p "Press Enter..."
 }
 
 install_all() {
-    echo -e "${BLUE}=== STARTING AUTOMATED FULL STACK INSTALL ===${NC}"
+    echo -e "${BLUE}=== AUTO-INSTALL ALL ===${NC}"
+    echo -e "Installing Klipper, Moonraker, and Probe Tech..."
     
-    # Klipper
-    echo -e "${GOLD}Step 1: Klipper${NC}"
     install_klipper
-    
-    # Moonraker
-    echo -e "${GOLD}Step 2: Moonraker${NC}"
     install_moonraker
     
-    # Probe Tech
-    echo -e "${GOLD}Step 3: Probe Tech Control${NC}"
-    # For automated flow, we try to detect single instance or prompt just once
+    # For auto-install, if we can find a config dir, use first one automatically?
+    # Or just prompt once. Prompting is safer.
     install_probe_tech
     
-    MY_IP=$(get_ip)
-    echo -e "${GREEN}=== AUTOMATED INSTALL COMPLETE ===${NC}"
-    echo -e "Your Interface is ready at: ${GOLD}http://${MY_IP}:8080${NC}"
-    read -p "Press Enter to continue..."
-}
-
-# --- BACKUP ACTIONS ---
-
-backup_instance() {
-    if ! select_instance; then return; fi
-    mkdir -p "$BACKUP_DIR"
-    
-    name=$(basename "$SELECTED_INSTANCE")
-    ts=$(date +%Y%m%d_%H%M%S)
-    tarfile="${BACKUP_DIR}/${name}_backup_${ts}.tar.gz"
-    
-    echo -e "${GOLD}Backing up $name to $tarfile...${NC}"
-    tar -czf "$tarfile" -C "${HOME}" "$name"
-    
-    echo -e "${GREEN}Backup Complete!${NC}"
+    echo -e "${GREEN}Installation Complete!${NC}"
     read -p "Press Enter..."
 }
 
-# --- REMOVE ACTIONS ---
+# --- SUBMENUS ---
 
-remove_probe_tech() {
-    if ! select_instance; then return; fi
-    
-    PROBE_CFG="${SELECTED_CONF_DIR}/probe_tech.cfg"
-    PRINTER_CFG="${SELECTED_CONF_DIR}/printer.cfg"
-    
-    echo -e "${GOLD}Removing Probe Tech Config from $(basename "$SELECTED_INSTANCE")...${NC}"
-    
-    if [ -f "$PROBE_CFG" ]; then
-        rm "$PROBE_CFG"
-        echo -e "${GREEN}✓ Removed probe_tech.cfg${NC}"
-    fi
-    
-    if [ -f "$PRINTER_CFG" ]; then
-        sed -i '/\[include probe_tech.cfg\]/d' "$PRINTER_CFG"
-        echo -e "${GREEN}✓ Cleaned printer.cfg${NC}"
-    fi
-    
-    echo -e "${GOLD}Note: Manually remove update_manager block from moonraker.conf${NC}"
-    read -p "Press Enter..."
-}
-
-remove_moonraker() {
-    echo -e "${RED}WARNING: This will stop the Moonraker service and delete the ~/moonraker directory.${NC}"
-    read -p "Are you sure? (y/n): " confirm
-    if [[ "$confirm" != "y" ]]; then return; fi
-
-    echo -e "${GOLD}Stopping Moonraker service...${NC}"
-    sudo systemctl stop moonraker 2>/dev/null
-    sudo systemctl disable moonraker 2>/dev/null
-    
-    # Also find any moonraker-*.service
-    for s in /etc/systemd/system/moonraker-*.service; do
-        sname=$(basename "$s")
-        sudo systemctl stop "$sname" 2>/dev/null
-        sudo systemctl disable "$sname" 2>/dev/null
-        echo -e "Stopped $sname"
-    done
-
-    echo -e "${GOLD}Removing ~/moonraker...${NC}"
-    rm -rf "${HOME}/moonraker"
-    
-    echo -e "${GREEN}Moonraker Removed.${NC}"
-    read -p "Press Enter..."
-}
-
-remove_klipper() {
-    echo -e "${RED}WARNING: This will stop Klipper service and delete the ~/klipper directory.${NC}"
-    read -p "Are you sure? (y/n): " confirm
-    if [[ "$confirm" != "y" ]]; then return; fi
-
-    echo -e "${GOLD}Stopping Klipper service...${NC}"
-    sudo systemctl stop klipper 2>/dev/null
-    sudo systemctl disable klipper 2>/dev/null
-    
-     # Also find any klipper-*.service
-    for s in /etc/systemd/system/klipper-*.service; do
-        sname=$(basename "$s")
-        sudo systemctl stop "$sname" 2>/dev/null
-        sudo systemctl disable "$sname" 2>/dev/null
-        echo -e "Stopped $sname"
-    done
-
-    echo -e "${GOLD}Removing ~/klipper...${NC}"
-    rm -rf "${HOME}/klipper"
-    
-    echo -e "${GREEN}Klipper Removed.${NC}"
-    read -p "Press Enter..."
-}
-
-# --- MENUS ---
-
-menu_install() {
+menu_remove() {
     while true; do
-        print_header
-        check_status
-        echo -e "${BLUE}--- MANUAL INSTALL MENU ---${NC}"
-        echo "1) Install / Update Probe Tech Control (Single Instance)"
-        echo "2) Install Moonraker"
-        echo "3) Install Klipper"
-        echo "4) Back to Main Menu"
+        clear
+        print_box "REMOVE COMPONENTS" "${RED}"
+        echo "1) Remove Probe Tech Config"
+        echo "2) Uninstall Moonraker (Destructive)"
+        echo "3) Uninstall Klipper (Destructive)"
+        echo "4) Back"
         echo ""
         read -p "Select: " c
         case $c in
-            1) install_probe_tech ;;
-            2) install_moonraker ;;
-            3) install_klipper ;;
+            1) 
+                if select_instance; then
+                    rm -f "${SELECTED_CONF_DIR}/probe_tech.cfg"
+                    sed -i '/\[include probe_tech.cfg\]/d' "${SELECTED_CONF_DIR}/printer.cfg" 2>/dev/null
+                    echo -e "${GREEN}Removed config links.${NC}"
+                    read -p "Press Enter..."
+                fi
+                ;;
+            2) 
+                read -p "Uninstall Moonraker? (y/n): " y
+                if [ "$y" = "y" ]; then
+                    sudo systemctl stop moonraker 2>/dev/null
+                    rm -rf "${HOME}/moonraker"
+                    echo "Moonraker removed."
+                fi
+                ;;
+            3)
+                read -p "Uninstall Klipper? (y/n): " y
+                if [ "$y" = "y" ]; then
+                    sudo systemctl stop klipper 2>/dev/null
+                    rm -rf "${HOME}/klipper"
+                    echo "Klipper removed."
+                fi
+                ;;
             4) return ;;
-            *) ;;
         esac
     done
 }
 
 menu_service() {
     while true; do
-        print_header
-        check_status
-        echo -e "${BLUE}--- SERVICE CONTROL ---${NC}"
-        echo "1) Start Probe Tech Server"
-        echo "2) Stop Probe Tech Server"
-        echo "3) Restart Probe Tech Server"
+        clear
+        print_box "SERVICE CONTROL" "${BLUE}"
+        echo "1) Start"
+        echo "2) Stop"
+        echo "3) Restart"
         echo "4) Enable on Boot"
         echo "5) Disable on Boot"
-        echo "6) Back to Main Menu"
+        echo "6) Back"
         echo ""
         read -p "Select: " c
         case $c in
@@ -357,64 +323,60 @@ menu_service() {
     done
 }
 
-menu_backup() {
-    while true; do
-        print_header
-        check_status
-        echo -e "${BLUE}--- BACKUP & RESTORE ---${NC}"
-        echo "1) Backup Instance Configuration"
-        echo "2) Back to Main Menu"
-        echo ""
-        read -p "Select: " c
-        case $c in
-            1) backup_instance ;;
-            2) return ;;
-        esac
-    done
+backup_config() {
+    if select_instance; then
+        mkdir -p "$BACKUP_DIR"
+        name=$(basename "$SELECTED_INSTANCE") # e.g. printer_data
+        ts=$(date +%Y%m%d_%H%M%S)
+        tar -czf "${BACKUP_DIR}/${name}_${ts}.tar.gz" -C "$(dirname "$SELECTED_INSTANCE")" "$name"
+        echo -e "${GREEN}Backup saved to ${BACKUP_DIR}/${name}_${ts}.tar.gz${NC}"
+        read -p "Press Enter..."
+    fi
 }
 
-menu_remove() {
+manual_install_menu() {
     while true; do
-        print_header
-        check_status
-        echo -e "${BLUE}--- REMOVE MENU ---${NC}"
-        echo "1) Remove Probe Tech Config"
-        echo "2) Remove Moonraker (Complete Uninstall)"
-        echo "3) Remove Klipper (Complete Uninstall)"
-        echo "4) Back to Main Menu"
+        clear
+        print_box "MANUAL INSTALLATION" "${BLUE}"
+        echo "1) Install Probe Tech Control (Config & Service)"
+        echo "2) Install Moonraker"
+        echo "3) Install Klipper"
+        echo "4) Back"
         echo ""
         read -p "Select: " c
         case $c in
-            1) remove_probe_tech ;;
-            2) remove_moonraker ;;
-            3) remove_klipper ;;
+            1) install_probe_tech; read -p "Press Enter..." ;;
+            2) install_moonraker ;;
+            3) install_klipper ;;
             4) return ;;
         esac
     done
 }
 
-# --- MAIN ---
+# --- MAIN LOOP ---
 
 while true; do
-    print_header
+    clear
     check_status
     
-    echo "1) Auto-Install All (Klipper + Moonraker + Probe Tech)"
+    echo "1) Auto-Install All (Probe Tech Control, Moonraker, Klipper)"
     echo "2) Manual Installation (Install / Update)"
     echo "3) Remove Components"
     echo "4) Backup Configuration"
     echo "5) Service Control"
-    echo "6) Quit"
+    echo "6) WiFi Config (WiFi, Hotspot, Info)"
+    echo "7) Quit"
     echo ""
     read -p "Select option: " main_c
     
     case $main_c in
         1) install_all ;;
-        2) menu_install ;;
+        2) manual_install_menu ;;
         3) menu_remove ;;
-        4) menu_backup ;;
+        4) backup_config ;;
         5) menu_service ;;
-        6) exit 0 ;;
+        6) menu_wifi ;;
+        7) exit 0 ;;
         *) ;;
     esac
 done
