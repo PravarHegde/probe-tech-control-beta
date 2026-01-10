@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Probe Tech Control Advanced Installer and Manager
-# Version 6: Advanced Network Edition (Hotspot/WiFi Manager)
+# Version 7: Multi-Instance Edition (Deep Detect, Instance Creator)
 
 # --- VARIABLES ---
 HOME_DIR="${HOME}"
@@ -31,9 +31,9 @@ get_ip() {
     hostname -I | awk '{print $1}'
 }
 
-# Improved Instance Detection: Looks for directories containing printer.cfg
+# Improved Instance Detection: Looks DEEPER for printer.cfg (maxdepth 4 covers ~/printer_data/config/printer.cfg)
 get_instances() {
-    find "${HOME}" -maxdepth 2 -name "printer.cfg" -print0 | xargs -0 -I {} dirname {} | sort | uniq
+    find "${HOME}" -maxdepth 4 -name "printer.cfg" -print0 | xargs -0 -I {} dirname {} | sort | uniq
 }
 
 # Shows a list of valid config directories to pick from
@@ -48,15 +48,15 @@ select_instance() {
         # Fallback to creating a default directory if none exist?
         echo -e "${SILVER}Creating default: ~/printer_data/config${NC}"
         mkdir -p "${HOME}/printer_data/config"
+        touch "${HOME}/printer_data/config/printer.cfg"
         instances=("${HOME}/printer_data/config")
     fi
 
     i=1
     for inst in "${instances[@]}"; do
-        # Show parent folder name usually (e.g. printer_data/config -> printer_data)
-        parent=$(basename "$(dirname "$inst")")
-        name=$(basename "$inst")
-        echo "$i) $parent/$name"
+        # Show path relative to home for clarity
+        rel_path="${inst/#$HOME/\~}"
+        echo "$i) $rel_path"
         ((i++))
     done
     
@@ -81,7 +81,7 @@ check_status() {
     
     # Check Probe Tech Config
     local installed=0
-    # Use cached instances if possible, but mapfile is fast enough with maxdepth 2
+    # Use cached instances if possible, but mapfile is fast enough.
     mapfile -t instances < <(get_instances)
     for inst in "${instances[@]}"; do
         if [ -f "$inst/probe_tech.cfg" ]; then
@@ -93,7 +93,7 @@ check_status() {
     if [ $installed -eq 1 ]; then
          echo -e "Probe Tech Control: ${GREEN}Installed${NC}"
     else
-         echo -e "Probe Tech Control: ${SILVER}Not Detected${NC}"
+         echo -e "Probe Tech Control: ${SILVER}Not Detected (Need Config)${NC}"
     fi
 
     # Check Moonraker
@@ -135,8 +135,7 @@ wifi_status() {
 
 connect_wifi() {
     echo -e "${BLUE}Scanning for networks... (Please wait)${NC}"
-    # Get SSIDs, pipe to cat to avoid pager/color codes issues if any
-    # Columns: SSID, BARS, SIGNAL
+    # Get SSIDs
     mapfile -t networks < <(nmcli -f SSID,BARS,SIGNAL device wifi list | tail -n +2 | grep -v "^--" | awk '{$1=$1};1' | uniq | head -n 15)
     
     if [ ${#networks[@]} -eq 0 ]; then
@@ -158,14 +157,8 @@ connect_wifi() {
         return
     fi
     
-    # Extract SSID (Take first word? SSIDs with spaces might be tricky)
-    # Safer approach: Get raw line based on index
     RAW_LINE="${networks[$((net_sel-1))]}"
-    # Assuming standard nmcli output where SSID is first column(s). 
-    # Actually nmcli formatting is tricky. Let's ask user to type SSID if complex, or try to parse.
-    # We will try to just ask user to confirm SSID or type it to be safe.
-    
-    echo -e "${YELLOW}You selected: $RAW_LINE${NC}"
+    echo -e "${YELLOW}Selected: $RAW_LINE${NC}"
     read -p "Enter SSID Name (Type exact name from above): " ssid_name
     read -s -p "Enter Password: " wifi_pass
     echo ""
@@ -233,7 +226,6 @@ install_klipper() {
     else
         echo -e "${GREEN}Klipper already present.${NC}"
     fi
-    # Just in case, ensure user is in tty group
     sudo usermod -a -G tty,dialout $USER
 }
 
@@ -271,7 +263,6 @@ install_probe_tech() {
     # 3. Printer.cfg Link
     if [ -f "$PRINTER_CFG" ]; then
         if ! grep -q "include probe_tech.cfg" "$PRINTER_CFG"; then
-            # Insert at top
             sed -i '1s/^/[include probe_tech.cfg]\n/' "$PRINTER_CFG"
             echo -e "${GREEN}✓ Linked in printer.cfg${NC}"
         else
@@ -310,15 +301,50 @@ EOF
     fi
 }
 
+# --- MULTI-INSTANCE CREATOR ---
+
+create_instance() {
+    print_box "CREATE NEW PRINTER INSTANCE" "${BLUE}"
+    echo -e "${SILVER}This will create a new configuration folder and systemd services.${NC}"
+    read -p "Enter Instance Name (e.g. printer_2): " inst_name
+    
+    if [ -z "$inst_name" ]; then echo "Name cannot be empty."; return; fi
+    
+    # Paths
+    INST_DIR="${HOME}/${inst_name}_data"
+    CONF_DIR="${INST_DIR}/config"
+    LOG_DIR="${INST_DIR}/logs"
+    GCODE_DIR="${INST_DIR}/gcodes"
+    
+    echo -e "${GOLD}Creating folders in $INST_DIR...${NC}"
+    mkdir -p "$CONF_DIR" "$LOG_DIR" "$GCODE_DIR"
+    
+    # Create Basic Configs
+    if [ ! -f "${CONF_DIR}/printer.cfg" ]; then
+        echo "[include probe_tech.cfg]" > "${CONF_DIR}/printer.cfg"
+        echo -e "${GREEN}✓ Created printer.cfg${NC}"
+    fi
+    
+    if [ ! -f "${CONF_DIR}/moonraker.conf" ]; then
+        cat <<EOF > "${CONF_DIR}/moonraker.conf"
+[server]
+host: 0.0.0.0
+port: 7126
+# Incremented port? User might need to edit.
+EOF
+        echo -e "${GREEN}✓ Created moonraker.conf (Port 7126 - check manually)${NC}"
+    fi
+
+    echo -e "${GREEN}Instance Folder Created!${NC}"
+    echo -e "${YELLOW}Note: To install Klipper/Moonraker services for this instance, additional manual setup is required (service file cloning).${NC}"
+    echo -e "${YELLOW}For now, you can use this instance for Config storage.${NC}"
+    read -p "Press Enter..."
+}
+
 install_all() {
     echo -e "${BLUE}=== AUTO-INSTALL ALL ===${NC}"
-    echo -e "Installing Klipper, Moonraker, and Probe Tech..."
-    
     install_klipper
     install_moonraker
-    
-    # For auto-install, if we can find a config dir, use first one automatically?
-    # Or just prompt once. Prompting is safer.
     install_probe_tech
     
     echo -e "${GREEN}Installation Complete!${NC}"
@@ -408,14 +434,16 @@ manual_install_menu() {
         echo "1) Install Probe Tech Control (Config & Service)"
         echo "2) Install Moonraker"
         echo "3) Install Klipper"
-        echo "4) Back"
+        echo "4) Create New Printer Instance (Multi-Instance)"
+        echo "5) Back"
         echo ""
         read -p "Select: " c
         case $c in
             1) install_probe_tech; read -p "Press Enter..." ;;
             2) install_moonraker ;;
             3) install_klipper ;;
-            4) return ;;
+            4) create_instance ;;
+            5) return ;;
         esac
     done
 }
@@ -427,7 +455,7 @@ while true; do
     check_status
     
     echo "1) Auto-Install All (Probe Tech Control, Moonraker, Klipper)"
-    echo "2) Manual Installation (Install / Update)"
+    echo "2) Manual Installation (Install / Update / Multi-Instance)"
     echo "3) Remove Components"
     echo "4) Backup Configuration"
     echo "5) Service Control"
