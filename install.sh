@@ -26,8 +26,11 @@ print_header() {
     echo ""
 }
 
+get_ip() {
+    hostname -I | awk '{print $1}'
+}
+
 # Returns array of printer instances (dirs starting with printer_data or printer_X_data)
-# Formats as "1: printer_data" "2: printer_c_data" etc.
 get_instances() {
     find "${HOME}" -maxdepth 1 -type d -name "printer*_data" | sort
 }
@@ -61,7 +64,7 @@ select_instance() {
     return 0
 }
 
-# --- ACTIONS ---
+# --- INSTALL ACTIONS ---
 
 install_klipper() {
     echo -e "${YELLOW}Installing Klipper (Standard)...${NC}"
@@ -153,9 +156,32 @@ EOF
          echo -e "${GREEN}✓ Service Active${NC}"
     fi
     
-    echo -e "${GREEN}Done!${NC}"
+    MY_IP=$(get_ip)
+    echo -e "${GREEN}Done! Access at: http://${MY_IP}:8080${NC}"
     read -p "Press Enter..."
 }
+
+install_all() {
+    echo -e "${CYAN}=== STARTING AUTOMATED FULL STACK INSTALL ===${NC}"
+    
+    # Klipper
+    install_klipper
+    
+    # Moonraker
+    install_moonraker
+    
+    # Probe Tech
+    echo -e "${CYAN}Setting up Probe Tech Control...${NC}"
+    # For automated flow, we try to detect single instance or prompt just once
+    install_probe_tech
+    
+    MY_IP=$(get_ip)
+    echo -e "${GREEN}=== AUTOMATED INSTALL COMPLETE ===${NC}"
+    echo -e "Your Interface is ready at: ${CYAN}http://${MY_IP}:8080${NC}"
+    read -p "Press Enter to continue..."
+}
+
+# --- BACKUP ACTIONS ---
 
 backup_instance() {
     if ! select_instance; then return; fi
@@ -171,6 +197,8 @@ backup_instance() {
     echo -e "${GREEN}Backup Complete!${NC}"
     read -p "Press Enter..."
 }
+
+# --- REMOVE ACTIONS ---
 
 remove_probe_tech() {
     if ! select_instance; then return; fi
@@ -194,12 +222,60 @@ remove_probe_tech() {
     read -p "Press Enter..."
 }
 
+remove_moonraker() {
+    echo -e "${RED}WARNING: This will stop the Moonraker service and delete the ~/moonraker directory.${NC}"
+    read -p "Are you sure? (y/n): " confirm
+    if [[ "$confirm" != "y" ]]; then return; fi
+
+    echo -e "${YELLOW}Stopping Moonraker service...${NC}"
+    sudo systemctl stop moonraker 2>/dev/null
+    sudo systemctl disable moonraker 2>/dev/null
+    
+    # Also find any moonraker-*.service
+    for s in /etc/systemd/system/moonraker-*.service; do
+        sname=$(basename "$s")
+        sudo systemctl stop "$sname" 2>/dev/null
+        sudo systemctl disable "$sname" 2>/dev/null
+        echo -e "Stopped $sname"
+    done
+
+    echo -e "${YELLOW}Removing ~/moonraker...${NC}"
+    rm -rf "${HOME}/moonraker"
+    
+    echo -e "${GREEN}Moonraker Removed.${NC}"
+    read -p "Press Enter..."
+}
+
+remove_klipper() {
+    echo -e "${RED}WARNING: This will stop Klipper service and delete the ~/klipper directory.${NC}"
+    read -p "Are you sure? (y/n): " confirm
+    if [[ "$confirm" != "y" ]]; then return; fi
+
+    echo -e "${YELLOW}Stopping Klipper service...${NC}"
+    sudo systemctl stop klipper 2>/dev/null
+    sudo systemctl disable klipper 2>/dev/null
+    
+     # Also find any klipper-*.service
+    for s in /etc/systemd/system/klipper-*.service; do
+        sname=$(basename "$s")
+        sudo systemctl stop "$sname" 2>/dev/null
+        sudo systemctl disable "$sname" 2>/dev/null
+        echo -e "Stopped $sname"
+    done
+
+    echo -e "${YELLOW}Removing ~/klipper...${NC}"
+    rm -rf "${HOME}/klipper"
+    
+    echo -e "${GREEN}Klipper Removed.${NC}"
+    read -p "Press Enter..."
+}
+
 # --- MENUS ---
 
 menu_install() {
     while true; do
         print_header
-        echo -e "${CYAN}--- INSTALLATION MENU ---${NC}"
+        echo -e "${CYAN}--- MANUAL INSTALL MENU ---${NC}"
         echo "1) Install Klipper"
         echo "2) Install Moonraker"
         echo "3) Install Probe Tech Control (Single Instance)"
@@ -220,6 +296,9 @@ menu_service() {
     while true; do
         print_header
         echo -e "${CYAN}--- SERVICE CONTROL ---${NC}"
+        MY_IP=$(get_ip)
+        echo -e "URL: ${GREEN}http://${MY_IP}:8080${NC}"
+        echo ""
         echo "1) Start Probe Tech Server"
         echo "2) Stop Probe Tech Server"
         echo "3) Restart Probe Tech Server"
@@ -259,12 +338,16 @@ menu_remove() {
         print_header
         echo -e "${CYAN}--- REMOVE MENU ---${NC}"
         echo "1) Remove Probe Tech Config"
-        echo "2) Back to Main Menu"
+        echo "2) Remove Moonraker (Complete Uninstall)"
+        echo "3) Remove Klipper (Complete Uninstall)"
+        echo "4) Back to Main Menu"
         echo ""
         read -p "Select: " c
         case $c in
             1) remove_probe_tech ;;
-            2) return ;;
+            2) remove_moonraker ;;
+            3) remove_klipper ;;
+            4) return ;;
         esac
     done
 }
@@ -273,20 +356,22 @@ menu_remove() {
 
 while true; do
     print_header
-    echo "1) Install / Update"
-    echo "2) Remove"
-    echo "3) Backup"
-    echo "4) Service Control"
-    echo "5) Quit"
+    echo "1) Auto-Install All (Klipper + Moonraker + Probe Tech)"
+    echo "2) Manual Installation (Install / Update)"
+    echo "3) Remove Components"
+    echo "4) Backup Configuration"
+    echo "5) Service Control"
+    echo "6) Quit"
     echo ""
     read -p "Select option: " main_c
     
     case $main_c in
-        1) menu_install ;;
-        2) menu_remove ;;
-        3) menu_backup ;;
-        4) menu_service ;;
-        5) exit 0 ;;
+        1) install_all ;;
+        2) menu_install ;;
+        3) menu_remove ;;
+        4) menu_backup ;;
+        5) menu_service ;;
+        6) exit 0 ;;
         *) ;;
     esac
 done
