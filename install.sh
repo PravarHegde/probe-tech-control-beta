@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Probe Tech Control Advanced Installer and Manager
-# Version 5: Professional Edition (Box UI, WiFi, Auto-Detect)
+# Version 6: Advanced Network Edition (Hotspot/WiFi Manager)
 
 # --- VARIABLES ---
 HOME_DIR="${HOME}"
@@ -128,8 +128,73 @@ check_status() {
 
 wifi_status() {
     echo -e "${GOLD}--- Network Status ---${NC}"
-    nmcli -p device show wlan0 2>/dev/null | grep -E "IP4.ADDRESS|GENERAL.CONNECTION"
+    # Use cat to avoid pager execution (less)
+    nmcli -p device show wlan0 2>/dev/null | grep -E "IP4.ADDRESS|GENERAL.CONNECTION" | cat
     echo ""
+}
+
+connect_wifi() {
+    echo -e "${BLUE}Scanning for networks... (Please wait)${NC}"
+    # Get SSIDs, pipe to cat to avoid pager/color codes issues if any
+    # Columns: SSID, BARS, SIGNAL
+    mapfile -t networks < <(nmcli -f SSID,BARS,SIGNAL device wifi list | tail -n +2 | grep -v "^--" | awk '{$1=$1};1' | uniq | head -n 15)
+    
+    if [ ${#networks[@]} -eq 0 ]; then
+        echo -e "${RED}No networks found.${NC}"
+        return
+    fi
+    
+    i=1
+    for net in "${networks[@]}"; do
+        echo "$i) $net"
+        ((i++))
+    done
+    
+    echo ""
+    read -p "Select Network Number: " net_sel
+    
+    if [[ ! "$net_sel" =~ ^[0-9]+$ ]] || [ "$net_sel" -lt 1 ] || [ "$net_sel" -gt ${#networks[@]} ]; then
+        echo -e "${RED}Invalid selection.${NC}"
+        return
+    fi
+    
+    # Extract SSID (Take first word? SSIDs with spaces might be tricky)
+    # Safer approach: Get raw line based on index
+    RAW_LINE="${networks[$((net_sel-1))]}"
+    # Assuming standard nmcli output where SSID is first column(s). 
+    # Actually nmcli formatting is tricky. Let's ask user to type SSID if complex, or try to parse.
+    # We will try to just ask user to confirm SSID or type it to be safe.
+    
+    echo -e "${YELLOW}You selected: $RAW_LINE${NC}"
+    read -p "Enter SSID Name (Type exact name from above): " ssid_name
+    read -s -p "Enter Password: " wifi_pass
+    echo ""
+    
+    echo -e "${BLUE}Connecting to $ssid_name...${NC}"
+    sudo nmcli device wifi connect "$ssid_name" password "$wifi_pass"
+    read -p "Press Enter to continue..."
+}
+
+create_hotspot() {
+    echo -e "${BLUE}=== CREATE HOTSPOT ===${NC}"
+    read -p "Enter Hotspot SSID Name: " hs_ssid
+    read -s -p "Enter Hotspot Password (min 8 chars): " hs_pass
+    echo ""
+    echo ""
+    echo "1) WPA2 Security (Recommended)"
+    echo "2) Open (No Password)"
+    read -p "Select Security: " sec
+    
+    if [ "$sec" == "2" ]; then
+         echo -e "${YELLOW}Creating Open Hotspot...${NC}"
+         sudo nmcli device wifi hotspot ifname wlan0 ssid "$hs_ssid"
+    else
+         echo -e "${YELLOW}Creating Secured Hotspot...${NC}"
+         sudo nmcli device wifi hotspot ifname wlan0 ssid "$hs_ssid" password "$hs_pass"
+    fi
+    
+    echo -e "${GREEN}Hotspot Created. Verify with Status option.${NC}"
+    read -p "Press Enter..."
 }
 
 menu_wifi() {
@@ -137,27 +202,20 @@ menu_wifi() {
         clear
         print_box "WIFI CONFIGURATION" "${GOLD}"
         wifi_status
-        echo "1) Connect to WiFi Network"
-        echo "2) Show Network Info (LAN/Current)"
-        echo "3) Back to Main Menu"
+        echo "1) Connect to WiFi Network (Scan & Select)"
+        echo "2) Create Hotspot"
+        echo "3) Show Network Info (LAN/Current)"
+        echo "4) Back to Main Menu"
         echo ""
         read -p "Select: " c
         case $c in
-            1) 
-                echo -e "${SILVER}Scanning networks...${NC}"
-                nmcli device wifi list
-                read -p "Enter SSID Name: " ssid
-                read -s -p "Enter Password: " pass
-                echo ""
-                echo "Connecting..."
-                sudo nmcli device wifi connect "$ssid" password "$pass"
+            1) connect_wifi ;;
+            2) create_hotspot ;;
+            3)
+                ip addr show | cat
                 read -p "Press Enter..."
                 ;;
-            2)
-                ip addr show
-                read -p "Press Enter..."
-                ;;
-            3) return ;;
+            4) return ;;
         esac
     done
 }
