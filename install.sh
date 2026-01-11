@@ -368,11 +368,17 @@ install_probe_tech() {
     PROBE_CFG="${SELECTED_CONF_DIR}/probe_tech.cfg"
     PRINTER_CFG="${SELECTED_CONF_DIR}/printer.cfg"
     MOONRAKER_CONF="${SELECTED_CONF_DIR}/moonraker.conf"
-    
     # Use SCRIPT_DIR to find the cfg, ignoring CWD
     if [ -f "${SCRIPT_DIR}/probe_tech.cfg" ]; then
         cp "${SCRIPT_DIR}/probe_tech.cfg" "$PROBE_CFG"
-        echo -e "${GREEN}✓ probe_tech.cfg copied${NC}"
+        
+        # DYNAMIC PATCHING: Update virtual_sdcard path for this instance
+        # Get the actual instance data directory (one level up from /config)
+        local inst_data_dir=$(dirname "$SELECTED_CONF_DIR")
+        echo -e "${BLUE}Patching probe_tech.cfg paths for: $(basename "$inst_data_dir")...${NC}"
+        sed -i "s|path: ~/printer_data/gcodes|path: ${inst_data_dir}/gcodes|" "$PROBE_CFG"
+        
+        echo -e "${GREEN}✓ probe_tech.cfg copied and patched${NC}"
     else
         echo -e "${RED}Error: probe_tech.cfg source missing in script directory.${NC}"
     fi
@@ -510,8 +516,20 @@ EOF
     
     # Create Basic Configs
     if [ ! -f "${CONF_DIR}/printer.cfg" ]; then
-        echo "[include probe_tech.cfg]" > "${CONF_DIR}/printer.cfg"
-        echo -e "${GREEN}✓ Created printer.cfg${NC}"
+        cat <<EOF > "${CONF_DIR}/printer.cfg"
+[include probe_tech.cfg]
+
+[mcu]
+serial: /dev/serial/by-id/PLEASE_UPDATE_ME
+
+[printer]
+kinematics: none
+max_velocity: 300
+max_accel: 3000
+
+# --- ADD YOUR HARDWARE CONFIGS HERE ---
+EOF
+        echo -e "${GREEN}✓ Created printer.cfg with boilerplate${NC}"
     fi
     
     if [ ! -f "${CONF_DIR}/moonraker.conf" ]; then
@@ -965,6 +983,63 @@ manual_install_menu() {
 
 # --- MAIN LOOP ---
 
+menu_network() {
+    while true; do
+        clear
+        print_box "WIFI CONFIG & PORT CONFIGURATION" "${MAGENTA}"
+        
+        # Display Current IPs
+        local my_ip=$(get_ip)
+        echo "System IP Address: ${GOLD}${my_ip}${NC}"
+        echo ""
+        
+        # Display Instance Ports
+        echo -e "${BLUE}--- Active Instances ---${NC}"
+        mapfile -t instances < <(get_instances)
+        if [ ${#instances[@]} -eq 0 ]; then
+             echo "No instances found."
+        else
+             for inst in "${instances[@]}"; do
+                 local mconf="${inst}/moonraker.conf"
+                 local inst_name=$(basename "$(dirname "$inst")")
+                 local port="???"
+                 if [ -f "$mconf" ]; then
+                     port=$(grep -E "^\s*port:\s*[0-9]+" "$mconf" | awk -F: '{print $2}' | tr -d ' ')
+                 fi
+                 echo -e "  - ${inst_name}: Port ${CYAN}${port}${NC}"
+             done
+        fi
+        echo ""
+        
+        echo "1) Edit Instance Port/Host (Advanced)"
+        echo "2) WiFi Configuration (nmtui)"
+        echo "3) Back"
+        echo ""
+        read -p "Select: " c
+        case $c in
+            1) 
+               if select_instance; then
+                   echo -e "${GOLD}Opening moonraker.conf for editing...${NC}"
+                   echo -e "Look for [server] -> port: <number>"
+                   read -p "Press Enter to open nano..."
+                   nano "${SELECTED_CONF_DIR}/moonraker.conf"
+               fi
+               ;;
+            2) 
+               if command -v nmtui &> /dev/null; then
+                   sudo nmtui
+               else
+                   echo -e "${RED}Network Manager TUI (nmtui) not found.${NC}"
+                   read -p "Press Enter..."
+               fi
+               ;;
+            3) return ;;
+        esac
+    done
+}
+
+# --- MAIN LOOP ---
+
 while true; do
     clear
     check_status
@@ -975,7 +1050,7 @@ while true; do
     echo "4) Service Control (Status / Restart)"
     echo "5) Remove Components"
     echo "6) Backup & Restore"
-    echo "7) WiFi Config"
+    echo "7) WiFi Config & Port Configuration"
     echo "8) Quit"
     echo ""
     read -p "Select option: " main_c
@@ -987,7 +1062,7 @@ while true; do
         4) menu_service ;;
         5) menu_remove ;;
         6) menu_backup ;;
-        7) menu_wifi ;;
+        7) menu_network ;;
         8) exit 0 ;;
         *) ;;
     esac
