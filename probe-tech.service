@@ -1,0 +1,14 @@
+[Unit]
+Description=Probe Tech Control Web Interface
+After=network.target
+
+[Service]
+Type=simple
+User={USER}
+WorkingDirectory=/home/{USER}/probe-tech-control
+ExecStart=/usr/bin/python3 -m http.server 8080
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

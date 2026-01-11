@@ -17,9 +17,9 @@ const PWAConfig: Partial<VitePWAOptions> = {
     registerType: 'autoUpdate',
     includeAssets: ['fonts/**/*.woff2', 'img/**/*.svg', 'img/**/*.png'],
     manifest: {
-        name: 'Mainsail',
-        short_name: 'Mainsail',
-        description: 'Web interface for Klipper 3D printer firmware',
+        name: 'Probe Tech Control',
+        short_name: 'PTC',
+        description: 'Probe Tech Control is the popular web interface for Klipper.',
         theme_color: '#D51F26',
         display: 'standalone',
         start_url: '/',

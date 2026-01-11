@@ -2,10 +2,10 @@
     "App": {
         "Notifications": {
             "BrowserWarnings": {
-                "Description": "{name} is outdated and not fully supported. The current version is {version}, but Mainsail requires version {minVersion} or higher.",
+                "Description": "{name} is outdated and not fully supported. The current version is {version}, but Probe Tech Control requires version {minVersion} or higher.",
                 "Headline": "Outdated Browser"
             },
-            "DependencyDescription": "The current {name} version does not support all features of Mainsail. Update {name} to at least {neededVersion}.",
+            "DependencyDescription": "The current {name} version does not support all features of Probe Tech Control. Update {name} to at least {neededVersion}.",
             "DependencyName": "Dependency: {name}",
             "DismissAll": "Dismiss all",
             "KlipperWarnings": {
@@ -1119,7 +1119,7 @@
         "Connecting": "Connecting to {host}",
         "ConnectionFailed": "Connection failed",
         "EditPrinter": "Edit Printer",
-        "Hello": "Hello and welcome to the remote mode of Mainsail!",
+        "Hello": "Hello and welcome to the remote mode of Probe Tech Control!",
         "HostnameInvalid": "invalid Hostname/IP",
         "HostnameIp": "Hostname/IP",
         "HostnameRequired": "Hostname is required",
@@ -1254,7 +1254,7 @@
             "FactoryReset": "Factory reset",
             "General": "General",
             "Language": "Language",
-            "MainsailSettingsMoonrakerDb": "Mainsail Settings in Moonraker DB",
+            "MainsailSettingsMoonrakerDb": "Probe Tech Control Settings in Moonraker DB",
             "PrinterName": "Printer Name",
             "Reset": "reset",
             "Restore": "Restore",
@@ -1521,7 +1521,7 @@
             "PrintstatusThumbnailZoom": "Large thumbnail zoom",
             "PrintstatusThumbnailZoomDescription": "This will deactivate the zoom effect of the thumbnail in the status panel.",
             "ProgressAsFavicon": "Show progress as favicon",
-            "ProgressAsFaviconDescription": "Change the Mainsail logo favicon to a progress circle.",
+            "ProgressAsFaviconDescription": "Change the Probe Tech Control logo favicon to a progress circle.",
             "ScrewsTiltAdjustDialog": "Screws Tilt Adjust Dialog",
             "ScrewsTiltAdjustDialogDescription": "Display helper dialog for SCREWS_TILT_CALCULATE.",
             "TempchartHeight": "Height Temperature Chart",

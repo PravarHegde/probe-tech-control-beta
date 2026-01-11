@@ -15,9 +15,12 @@ temp
 package-lock.json
 *.local
 .env
-.vscode
 
 cypress/screenshots/
 cypress/videos/
 components.d.ts
 i18n-extract
+
+# Allow the release zip for the installer
+!probe-tech-control.zip
+!dist/probe-tech-control.zip
