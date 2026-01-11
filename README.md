@@ -21,25 +21,26 @@
 
 Choose the method that best suits your needs:
 
-### Option 1: Automated Installer (Fastest)
-Run the following command on your Raspberry Pi or Linux server (Ubuntu/Debian):
+### Option 1: Automated Installer
+Run one of the following commands on your Raspberry Pi or Linux server (Ubuntu/Debian):
 
+**Standard Installation:**
 ```bash
 git clone https://github.com/PravarHegde/probe-tech-control ptc
 cd ptc
 chmod +x install.sh
 ./install.sh
 ```
-Follow the on-screen menu to choose "Auto-Setup" for a fresh setup.
 
-### Option 2: Clear Previous / Start New (Fresh Install)
-If you have an existing installation or a failed attempt, use this command to wipe the old directory and start 100% fresh:
-
+**Clear Previous / Start New (Fresh Install):**
+*(Use this if you have an existing installation or a failed attempt)*
 ```bash
 cd ~ && rm -rf ptc && git clone https://github.com/PravarHegde/probe-tech-control ptc && cd ptc && chmod +x install.sh && ./install.sh
 ```
 
-### Option 3: Manual Setup
+Follow the on-screen menu to choose "Auto-Setup" for a fresh setup.
+
+### Option 2: Manual Setup
 For detailed manual configuration, requirements, and advanced setups, please refer to the:
 👉 **[INSTALL.md](INSTALL.md)**
 
