@@ -2,10 +2,10 @@
     "App": {
         "Notifications": {
             "BrowserWarnings": {
-                "Description": "Текущая версия браузера {name} ({version}) устарела и не полностью поддерживается. Для работы Mainsail требуется версия не ниже {minVersion}.",
+                "Description": "Текущая версия браузера {name} ({version}) устарела и не полностью поддерживается. Для работы Probe Tech Control требуется версия не ниже {minVersion}.",
                 "Headline": "Устаревшая версия браузера"
             },
-            "DependencyDescription": "Текущая версия {name} не поддерживает все возможности Mainsail. Обновите {name} до версии не ниже {neededVersion}.",
+            "DependencyDescription": "Текущая версия {name} не поддерживает все возможности Probe Tech Control. Обновите {name} до версии не ниже {neededVersion}.",
             "DependencyName": "Зависимость: {name}",
             "DismissAll": "Отклонить всё",
             "KlipperWarnings": {
@@ -864,7 +864,7 @@
         "Connecting": "Подключение к {host}",
         "ConnectionFailed": "Ошибка подключения",
         "EditPrinter": "Редактировать принтер",
-        "Hello": "Добро пожаловать в удалённый режим работы Mainsail!",
+        "Hello": "Добро пожаловать в удалённый режим работы Probe Tech Control!",
         "HostnameInvalid": "Неверное имя хоста/IP-адрес",
         "HostnameIp": "Имя хоста/IP-адрес",
         "HostnameRequired": "Требуется имя хоста",
@@ -999,7 +999,7 @@
             "FactoryReset": "Сброс к заводским настройкам",
             "General": "Общие",
             "Language": "Язык",
-            "MainsailSettingsMoonrakerDb": "Настройки Mainsail в базе данных Moonraker",
+            "MainsailSettingsMoonrakerDb": "Настройки Probe Tech Control в базе данных Moonraker",
             "PrinterName": "Имя принтера",
             "Reset": "Сброс",
             "Restore": "Восстановить",
@@ -1259,7 +1259,7 @@
             "PrintstatusThumbnailZoom": "Откл. отображение полномасштабной миниатюры",
             "PrintstatusThumbnailZoomDescription": "Отключение эффекта полномасштабной миниатюры на панели состояния во время печати.",
             "ProgressAsFavicon": "Прогресс печати во вкладке браузера",
-            "ProgressAsFaviconDescription": "Изменение значка логотипа Mainsail на кружок прогресса печати.",
+            "ProgressAsFaviconDescription": "Изменение значка логотипа Probe Tech Control на кружок прогресса печати.",
             "ScrewsTiltAdjustDialog": "Окно регулировки поворота винтов стола",
             "ScrewsTiltAdjustDialogDescription": "Отображать вспомогательное диалоговое окно для регулировки поворота винтов стола (SCREWS_TILT_CALCULATE).",
             "TempchartHeight": "Высота графика температуры",

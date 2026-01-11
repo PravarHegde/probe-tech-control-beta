@@ -1,7 +1,7 @@
 {
     "App": {
         "Notifications": {
-            "DependencyDescription": "現在のバージョンの{name}はMainsailの全機能をサポートしていません. {name}を{neededVersion}以上にアップデートしてください。",
+            "DependencyDescription": "現在のバージョンの{name}はProbe Tech Controlの全機能をサポートしていません. {name}を{neededVersion}以上にアップデートしてください。",
             "DependencyName": "依存: {name}",
             "DismissAll": "すべて了解",
             "KlipperWarnings": {
@@ -693,7 +693,7 @@
         "Connecting": "{host}に接続中",
         "ConnectionFailed": "接続失敗",
         "EditPrinter": "プリンター編集",
-        "Hello": "こんにちは!Mainsailのリモートモードへようこそ!",
+        "Hello": "こんにちは!Probe Tech Controlのリモートモードへようこそ!",
         "HostnameInvalid": "無効なホスト名/IP",
         "HostnameIp": "ホスト名/IP",
         "HostnameRequired": "ホスト名が必要です",

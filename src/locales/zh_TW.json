@@ -2,10 +2,10 @@
     "App": {
         "Notifications": {
             "BrowserWarnings": {
-                "Description": "{name} 已過時且不完全支援。目前的版本是 {version}，但 Mainsail 需要 {minVersion} 或更高版本。",
+                "Description": "{name} 已過時且不完全支援。目前的版本是 {version}，但 Probe Tech Control 需要 {minVersion} 或更高版本。",
                 "Headline": "過時的瀏覽器"
             },
-            "DependencyDescription": "目前的 {name} 版本不支援 Mainsail 的所有功能。請將 {name} 更新至至少 {neededVersion} 版本。",
+            "DependencyDescription": "目前的 {name} 版本不支援 Probe Tech Control 的所有功能。請將 {name} 更新至至少 {neededVersion} 版本。",
             "DependencyName": "依賴項： {name}",
             "DismissAll": "關閉所有",
             "KlipperWarnings": {
@@ -660,7 +660,7 @@
             "All": "全部",
             "FPS": "FPS",
             "Headline": "攝影機",
-            "NoWebcam": "没有可用的攝影機。在\"Mainsail設置\" -> \"攝影機\"新增攝影機。",
+            "NoWebcam": "没有可用的攝影機。在\"Probe Tech Control設置\" -> \"攝影機\"新增攝影機。",
             "UnknownWebcamService": "未知攝影機服務"
         },
         "ZoffsetPanel": {
@@ -703,7 +703,7 @@
         "Connecting": "正在連接到 {host}",
         "ConnectionFailed": "連接失敗",
         "EditPrinter": "編輯列印機",
-        "Hello": "歡迎來到Mainsail的遠端模式!",
+        "Hello": "歡迎來到Probe Tech Control的遠端模式!",
         "HostnameInvalid": "無效的 主機名稱/IP位址",
         "HostnameIp": "主機名稱/IP位址",
         "HostnameRequired": "需要設定主機名稱/IP位址",

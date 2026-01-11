@@ -1,0 +1,10 @@
+{
+    "defaultLocale": "en",
+    "defaultMode": "dark",
+    "defaultTheme": "mainsail",
+    "hostname": "localhost",
+    "port": 7125,
+    "path": null,
+    "instancesDB": "moonraker",
+    "instances": []
+}

@@ -7,7 +7,7 @@
         </template>
         <v-container class="version-container pa-0">
             <div><img height="12" src="@/assets/logo.svg" alt="brand-logo" /></div>
-            <div>v{{ mainsailVersion }}</div>
+            <div>v{{ probeTechVersion }}</div>
             <div>
                 <v-icon small class="moonraker-logo">{{ mdiMoonWaningCrescent }}</v-icon>
             </div>
@@ -30,7 +30,7 @@ export default class AboutDialog extends Mixins(BaseMixin) {
     mdiCloseThick = mdiCloseThick
     mdiMoonWaningCrescent = mdiMoonWaningCrescent
 
-    get mainsailVersion(): string {
+    get probeTechVersion(): string {
         return this.$store.state.packageVersion
     }
 

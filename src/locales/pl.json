@@ -2,10 +2,10 @@
     "App": {
         "Notifications": {
             "BrowserWarnings": {
-                "Description": "{name} jest nieaktualny i nie jest w pełni obsługiwany. Aktualna wersja to {version}, lecz Mainsail wymaga wersji {minVersion} lub wyższej.",
+                "Description": "{name} jest nieaktualny i nie jest w pełni obsługiwany. Aktualna wersja to {version}, lecz Probe Tech Control wymaga wersji {minVersion} lub wyższej.",
                 "Headline": "Nieaktualna przeglądarka"
             },
-            "DependencyDescription": "Aktualna wersja {name} nie wspiera wszystkich funkcji Mainsail. Zaktualizuj {name} co najmniej do wersji {neededVersion}.",
+            "DependencyDescription": "Aktualna wersja {name} nie wspiera wszystkich funkcji Probe Tech Control. Zaktualizuj {name} co najmniej do wersji {neededVersion}.",
             "DependencyName": "Zależność: {name}",
             "DismissAll": "Odrzuć wszystko",
             "KlipperWarnings": {
@@ -764,7 +764,7 @@
         "Connecting": "Łączenie z {host}",
         "ConnectionFailed": "Połączenie nieudane",
         "EditPrinter": "Edytuj drukarkę",
-        "Hello": "Witaj w zdalnym połączeniu z Mainsailem!",
+        "Hello": "Witaj w zdalnym połączeniu z Probe Tech Controlem!",
         "HostnameInvalid": "Nieprawidłowy Hostname/IP",
         "HostnameIp": "Hostname/IP",
         "HostnameRequired": "Hostname jest wymagany",
@@ -893,7 +893,7 @@
             "FactoryReset": "Ustawienia fabryczne",
             "General": "Ogólne",
             "Language": "Język",
-            "MainsailSettingsMoonrakerDb": "Ustawienia Mainsail w bazie danych Moonraker",
+            "MainsailSettingsMoonrakerDb": "Ustawienia Probe Tech Control w bazie danych Moonraker",
             "PrinterName": "Nazwa drukarki",
             "Reset": "reset",
             "Restore": "Przywróć",

@@ -2,10 +2,10 @@
     "App": {
         "Notifications": {
             "BrowserWarnings": {
-                "Description": "{name} est obsolète et n'est pas entièrement pris en charge. La version actuelle est {version}, mais Mainsail requiert la version {minVersion} ou une version supérieure.",
+                "Description": "{name} est obsolète et n'est pas entièrement pris en charge. La version actuelle est {version}, mais Probe Tech Control requiert la version {minVersion} ou une version supérieure.",
                 "Headline": "Navigateur obsolète"
             },
-            "DependencyDescription": "La version actuelle de {name} ne supporte pas toutes les fonctionnalités de Mainsail. Mettez {name} à jour vers la version {neededVersion}.",
+            "DependencyDescription": "La version actuelle de {name} ne supporte pas toutes les fonctionnalités de Probe Tech Control. Mettez {name} à jour vers la version {neededVersion}.",
             "DependencyName": "Dépendance: {name}",
             "DismissAll": "Annuler tout",
             "KlipperWarnings": {
@@ -787,7 +787,7 @@
         "Connecting": "Se connecter à {host}",
         "ConnectionFailed": "Échec de la connexion",
         "EditPrinter": "Editer l'imprimante",
-        "Hello": "Bonjour et bienvenue dans le mode à distance de Mainsail!",
+        "Hello": "Bonjour et bienvenue dans le mode à distance de Probe Tech Control!",
         "HostnameInvalid": "nom d'hôte/IP non valide",
         "HostnameIp": "Nom d'hôte/IP",
         "HostnameRequired": "Le nom d'hôte est requis",
@@ -918,7 +918,7 @@
             "FactoryReset": "Réinitialisation d'usine",
             "General": "Général",
             "Language": "Langue",
-            "MainsailSettingsMoonrakerDb": "Réglages de Mainsail dans Moonraker DB",
+            "MainsailSettingsMoonrakerDb": "Réglages de Probe Tech Control dans Moonraker DB",
             "PrinterName": "Nom de l'imprimante",
             "Reset": "réinitialiser",
             "Restore": "Restaurer",

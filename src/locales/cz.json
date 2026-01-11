@@ -2,10 +2,10 @@
     "App": {
         "Notifications": {
             "BrowserWarnings": {
-                "Description": "{name} je zastaralý a bez podpory. Aktuální verze je {version}, ale Mainsail vyžaduje verzi {minVersion} a vyšší.",
+                "Description": "{name} je zastaralý a bez podpory. Aktuální verze je {version}, ale Probe Tech Control vyžaduje verzi {minVersion} a vyšší.",
                 "Headline": "Zastaralý prohlížeč"
             },
-            "DependencyDescription": "Aktuální verze {name} nepodporuje všechny funkce aplikace Mainsail. Aktualizujte {name} alespoň na verzi {neededVersion}.",
+            "DependencyDescription": "Aktuální verze {name} nepodporuje všechny funkce aplikace Probe Tech Control. Aktualizujte {name} alespoň na verzi {neededVersion}.",
             "DependencyName": "Závislost: {name}",
             "DismissAll": "Zrušit vše",
             "KlipperWarnings": {
@@ -872,7 +872,7 @@
         "Connecting": "Připojování k {host}",
         "ConnectionFailed": "Připojení selhalo",
         "EditPrinter": "Upravit tiskárnu",
-        "Hello": "Vítejte v dálkovém režimu Mainsail!",
+        "Hello": "Vítejte v dálkovém režimu Probe Tech Control!",
         "HostnameInvalid": "Neplatný hostname/IP",
         "HostnameIp": "Hostname/IP",
         "HostnameRequired": "Je vyžadován hostname",
@@ -1007,7 +1007,7 @@
             "FactoryReset": "Reset na tovární hodnoty",
             "General": "Obecné",
             "Language": "Jazyk",
-            "MainsailSettingsMoonrakerDb": "Mainsail nastavení v Moonraker DB",
+            "MainsailSettingsMoonrakerDb": "Probe Tech Control nastavení v Moonraker DB",
             "PrinterName": "Název tiskárny",
             "Reset": "Resetovat",
             "Restore": "Obnovit",
@@ -1274,7 +1274,7 @@
             "PrintstatusThumbnailZoom": "Velké přiblížení náhledu",
             "PrintstatusThumbnailZoomDescription": "Tímto se deaktivuje efekt přiblížení náhledu v panelu stavu.",
             "ProgressAsFavicon": "Zobrazit průběh jako favicon",
-            "ProgressAsFaviconDescription": "Změnit favicon loga Mainsail na indikátor průběhu ve tvaru kruhu.",
+            "ProgressAsFaviconDescription": "Změnit favicon loga Probe Tech Control na indikátor průběhu ve tvaru kruhu.",
             "ScrewsTiltAdjustDialog": "Dialog nastavení náklonu šroubů",
             "ScrewsTiltAdjustDialogDescription": "Zobrazit pomocný dialog pro výpočet náklonu šroubů SCREWS_TILT_CALCULATE.",
             "TempchartHeight": "Graf výšky teploty",

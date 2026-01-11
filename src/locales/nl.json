@@ -2,10 +2,10 @@
     "App": {
         "Notifications": {
             "BrowserWarnings": {
-                "Description": "{name} is verouderd en niet volledig ondersteund. De huidige versie is {version}, maar Mainsail vereist versie {minVersion} of hoger.",
+                "Description": "{name} is verouderd en niet volledig ondersteund. De huidige versie is {version}, maar Probe Tech Control vereist versie {minVersion} of hoger.",
                 "Headline": "Verouderde Browser"
             },
-            "DependencyDescription": "De huidige {name} versie ondersteunt niet alle functies van Mainsail. Update {name} naar ten minste {neededVersion}.",
+            "DependencyDescription": "De huidige {name} versie ondersteunt niet alle functies van Probe Tech Control. Update {name} naar ten minste {neededVersion}.",
             "DependencyName": "Afhankelijkheid: {name}",
             "DismissAll": "Dismiss all",
             "KlipperWarnings": {
@@ -747,7 +747,7 @@
         "Connecting": "Verbinden met {host}",
         "ConnectionFailed": "Verbinding mislukt",
         "EditPrinter": "Bewerk printer",
-        "Hello": "Hoi en welkom bij de op afstand modus van Mainsail!",
+        "Hello": "Hoi en welkom bij de op afstand modus van Probe Tech Control!",
         "HostnameInvalid": "ongeldige Hostname/IP",
         "HostnameIp": "Hostname/IP",
         "HostnameRequired": "Hostname is verplicht",

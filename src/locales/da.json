@@ -2,10 +2,10 @@
     "App": {
         "Notifications": {
             "BrowserWarnings": {
-                "Description": "{name} er forældet og ikke længere fuldt understøttet. Den nuværende version er {version}, men Mainsail kræver version {minVersion} eller højere.",
+                "Description": "{name} er forældet og ikke længere fuldt understøttet. Den nuværende version er {version}, men Probe Tech Control kræver version {minVersion} eller højere.",
                 "Headline": "Forældet browser"
             },
-            "DependencyDescription": "Den nuværende version af {name} understøtter ikke alle funktioner i Mainsail. Opdatér {name} til minimum version: {neededVersion}.",
+            "DependencyDescription": "Den nuværende version af {name} understøtter ikke alle funktioner i Probe Tech Control. Opdatér {name} til minimum version: {neededVersion}.",
             "DependencyName": "Afhængighed: {name}",
             "DismissAll": "Fjern alle",
             "KlipperWarnings": {
@@ -841,7 +841,7 @@
         "Connecting": "Forbinder med {host}",
         "ConnectionFailed": "Forbindelse fejlede",
         "EditPrinter": "Rediger Printer",
-        "Hello": "Hej og velkommen til fjernbetjeningsversionen af Mainsail!",
+        "Hello": "Hej og velkommen til fjernbetjeningsversionen af Probe Tech Control!",
         "HostnameInvalid": "Ugyldigt værtsnavn/IP",
         "HostnameIp": "Værtsnavn/IP",
         "HostnameRequired": "Værtsnavn er påkrævet",
@@ -975,7 +975,7 @@
             "FactoryReset": "Komplet nulstilling",
             "General": "Generelt",
             "Language": "Sprog",
-            "MainsailSettingsMoonrakerDb": "Mainsails indstillinger i Moonrakers database",
+            "MainsailSettingsMoonrakerDb": "Probe Tech Controls indstillinger i Moonrakers database",
             "PrinterName": "Printernavn",
             "Reset": "Nulstil",
             "Restore": "Gendan",
@@ -1210,7 +1210,7 @@
             "PrintstatusThumbnailZoom": "Stort thumbnail zoom",
             "PrintstatusThumbnailZoomDescription": "Dette vil deaktivere zoom-effekten på thumbnails i status panelet.",
             "ProgressAsFavicon": "Vis fremgang som favicon",
-            "ProgressAsFaviconDescription": "Skift Mainsail logo favicon til fremgangscirkel.",
+            "ProgressAsFaviconDescription": "Skift Probe Tech Control logo favicon til fremgangscirkel.",
             "ScrewsTiltAdjustDialog": "Bed-skrue justeringsvindue til Probe",
             "ScrewsTiltAdjustDialogDescription": "Viser vindue til hjælp med Bed-skrue justeringer ved brug af proben.",
             "TempchartHeight": "Temperaturgrafens højde",

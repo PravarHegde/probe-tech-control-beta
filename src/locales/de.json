@@ -2,10 +2,10 @@
     "App": {
         "Notifications": {
             "BrowserWarnings": {
-                "Description": "Die verwendete {name} Version ({version}) ist veraltet und wird nicht vollständig unterstützt. Mainsail benötigt die Version {minVersion} oder höher.",
+                "Description": "Die verwendete {name} Version ({version}) ist veraltet und wird nicht vollständig unterstützt. Probe Tech Control benötigt die Version {minVersion} oder höher.",
                 "Headline": "Veralteter Browser"
             },
-            "DependencyDescription": "Die momentane {name} Version unterstützt nicht alle Funktionen von Mainsail. Aktualisiere {name} mindestens auf Version {neededVersion}.",
+            "DependencyDescription": "Die momentane {name} Version unterstützt nicht alle Funktionen von Probe Tech Control. Aktualisiere {name} mindestens auf Version {neededVersion}.",
             "DependencyName": "Abhängigkeit: {name}",
             "DismissAll": "Alles verwerfen",
             "KlipperWarnings": {
@@ -1118,7 +1118,7 @@
         "Connecting": "Verbinde zu {host}",
         "ConnectionFailed": "Verbindung fehlgeschlagen",
         "EditPrinter": "Drucker bearbeiten",
-        "Hello": "Hallo und willkommen im Remote-Modus von Mainsail!",
+        "Hello": "Hallo und willkommen im Remote-Modus von Probe Tech Control!",
         "HostnameInvalid": "ungültiger Hostname/IP",
         "HostnameIp": "Hostname/IP",
         "HostnameRequired": "Hostname ist erforderlich",
@@ -1253,7 +1253,7 @@
             "FactoryReset": "Werkseinstellungen",
             "General": "Allgemein",
             "Language": "Sprache",
-            "MainsailSettingsMoonrakerDb": "Mainsail Einstellungen in Moonraker DB",
+            "MainsailSettingsMoonrakerDb": "Probe Tech Control Einstellungen in Moonraker DB",
             "PrinterName": "Druckername",
             "Reset": "zurücksetzen",
             "Restore": "Wiederherstellung",
@@ -1520,7 +1520,7 @@
             "PrintstatusThumbnailZoom": "Großes-Vorschaubild Vergrößerung",
             "PrintstatusThumbnailZoomDescription": "Dadurch wird der Vergrößerungseffekt des Vorschaubildes im Statusfenster deaktiviert.",
             "ProgressAsFavicon": "Fortschritt als Favicon anzeigen",
-            "ProgressAsFaviconDescription": "Ändere das Mainsail-Logo-Favicon in einen Fortschrittskreis.",
+            "ProgressAsFaviconDescription": "Ändere das Probe Tech Control-Logo-Favicon in einen Fortschrittskreis.",
             "ScrewsTiltAdjustDialog": "Hilfsfenster für Schrauben Neigunganpassung",
             "ScrewsTiltAdjustDialogDescription": "Zeige ein Hilfsfenster für SCREWS_TILT_CALCULATE an.",
             "TempchartHeight": "Temperatur-Chart Höhe",

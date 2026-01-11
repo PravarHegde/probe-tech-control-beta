@@ -2,10 +2,10 @@
     "App": {
         "Notifications": {
             "BrowserWarnings": {
-                "Description": "{name} elavult és nem teljesen támogatott. A jelenlegi verzió {version}, de a Mainsail-hez {minVersion} vagy újabb verzió szükséges.",
+                "Description": "{name} elavult és nem teljesen támogatott. A jelenlegi verzió {version}, de a Probe Tech Control-hez {minVersion} vagy újabb verzió szükséges.",
                 "Headline": "Elavult böngésző"
             },
-            "DependencyDescription": "Ez a verzió {name} nem támogat minden Mainsail funkciót. Frissítsd az újra {neededVersion} a jelenlegit {name}.",
+            "DependencyDescription": "Ez a verzió {name} nem támogat minden Probe Tech Control funkciót. Frissítsd az újra {neededVersion} a jelenlegit {name}.",
             "DependencyName": "Függőség: {name}",
             "DismissAll": "Mind elvetése",
             "KlipperWarnings": {
@@ -866,7 +866,7 @@
         "Connecting": "Kapcsolódás ehhez: {host}",
         "ConnectionFailed": "Kapcsolódás sikertelen",
         "EditPrinter": "Nyomtató beállítása",
-        "Hello": "Szia, üdvözlünk a távoli hozzáférésű Mainsail-ben!",
+        "Hello": "Szia, üdvözlünk a távoli hozzáférésű Probe Tech Control-ben!",
         "HostnameInvalid": "Gazdanév/IP érvénytelen",
         "HostnameIp": "Gazdanév/IP",
         "HostnameRequired": "Gazdanév szükséges",
@@ -1001,7 +1001,7 @@
             "FactoryReset": "Gyári visszaállítás",
             "General": "Általános",
             "Language": "Nyelv",
-            "MainsailSettingsMoonrakerDb": "Mainsail beállítások a Moonraker DB-ben",
+            "MainsailSettingsMoonrakerDb": "Probe Tech Control beállítások a Moonraker DB-ben",
             "PrinterName": "Nyomtató neve",
             "Reset": "Visszaállítás",
             "Restore": "Helyreállítás",
@@ -1261,7 +1261,7 @@
             "PrintstatusThumbnailZoom": "Nagyobb miniatűr nagyítás",
             "PrintstatusThumbnailZoomDescription": "Ezzel kikapcsolod a miniatűrkép nagyítását az állapotpanelen.",
             "ProgressAsFavicon": "Haladás megjelenítése faviconként",
-            "ProgressAsFaviconDescription": "A Mainsail logó faviconjának megváltoztatása egy haladás körre.",
+            "ProgressAsFaviconDescription": "A Probe Tech Control logó faviconjának megváltoztatása egy haladás körre.",
             "ScrewsTiltAdjustDialog": "Csavar dőlésbeállítás párbeszédpanel",
             "ScrewsTiltAdjustDialogDescription": "A SCREWS_TILT_CALCULATE segéddialógus megjelenítése.",
             "TempchartHeight": "Magassági hőmérséklet diagram",

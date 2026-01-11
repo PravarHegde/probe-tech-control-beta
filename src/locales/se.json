@@ -2,10 +2,10 @@
     "App": {
         "Notifications": {
             "BrowserWarnings": {
-                "Description": "{name} är föråldrad och stöds inte fullt ut. Den nuvarande versionen är {version}, men Mainsail kräver version {minVersion} eller högre.",
+                "Description": "{name} är föråldrad och stöds inte fullt ut. Den nuvarande versionen är {version}, men Probe Tech Control kräver version {minVersion} eller högre.",
                 "Headline": "Föråldrad webbläsare"
             },
-            "DependencyDescription": "Den nuvarande versionen av {name} stöder inte alla funktioner i Mainsail. \nUppdatera {name} till minst {neededVersion}.",
+            "DependencyDescription": "Den nuvarande versionen av {name} stöder inte alla funktioner i Probe Tech Control. \nUppdatera {name} till minst {neededVersion}.",
             "DependencyName": "Beroende: {name}",
             "DismissAll": "Avfärda alla",
             "KlipperWarnings": {
@@ -777,7 +777,7 @@
         "Connecting": "Ansluter till {host}",
         "ConnectionFailed": "Anslutningen misslyckades",
         "EditPrinter": "Redigera skrivare",
-        "Hello": "Hej och välkommen till det fjärrstyrda läget för Mainsail!",
+        "Hello": "Hej och välkommen till det fjärrstyrda läget för Probe Tech Control!",
         "HostnameInvalid": "ogiltigt värdnamn/IP",
         "HostnameIp": "Värdnamn/IP",
         "HostnameRequired": "Värdnamn krävs",
@@ -908,7 +908,7 @@
             "FactoryReset": "Fabriksåterställning",
             "General": "Allmän",
             "Language": "Språk",
-            "MainsailSettingsMoonrakerDb": "Mainsail inställningar i Moonraker DB",
+            "MainsailSettingsMoonrakerDb": "Probe Tech Control inställningar i Moonraker DB",
             "PrinterName": "Skrivarens namn",
             "Reset": "Nollställ",
             "Restore": "Återställ",

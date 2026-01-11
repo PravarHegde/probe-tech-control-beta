@@ -2,10 +2,10 @@
     "App": {
         "Notifications": {
             "BrowserWarnings": {
-                "Description": "{name} більше не підтримується. Поточна версія {version}, але Mainsail потребує версію {minVersion} або вище.",
+                "Description": "{name} більше не підтримується. Поточна версія {version}, але Probe Tech Control потребує версію {minVersion} або вище.",
                 "Headline": "Застарілий браузер"
             },
-            "DependencyDescription": "Поточна версія {name} не підтримує всі функції Mainsail. Оновіть {name} принаймні до {neededVersion}.",
+            "DependencyDescription": "Поточна версія {name} не підтримує всі функції Probe Tech Control. Оновіть {name} принаймні до {neededVersion}.",
             "DependencyName": "Залежність: {name}",
             "DismissAll": "Відкинути всі",
             "KlipperWarnings": {
@@ -841,7 +841,7 @@
         "Connecting": "Підключення до {host}",
         "ConnectionFailed": "Підключення не вдалося",
         "EditPrinter": "Редагувати принтер",
-        "Hello": "Привіт і ласкаво просимо до віддаленого режиму Mainsail!",
+        "Hello": "Привіт і ласкаво просимо до віддаленого режиму Probe Tech Control!",
         "HostnameInvalid": "Недійсне ім'я хоста/IP",
         "HostnameIp": "Ім'я хоста/IP",
         "HostnameRequired": "Необхідне ім'я хоста",
@@ -975,7 +975,7 @@
             "FactoryReset": "Заводські налаштування",
             "General": "Загальний",
             "Language": "Мова",
-            "MainsailSettingsMoonrakerDb": "Параметри Mainsail в БД Moonraker",
+            "MainsailSettingsMoonrakerDb": "Параметри Probe Tech Control в БД Moonraker",
             "PrinterName": "Ім'я принтера",
             "Reset": "скинути",
             "Restore": "Відновити",
@@ -1203,7 +1203,7 @@
             "PowerDeviceNameDescription": "Виберіть, який пристрій живлення Moonraker слід використовувати для живлення принтера.",
             "Primary": "Основний Колір",
             "ProgressAsFavicon": "Показати прогрес у вкладці браузера",
-            "ProgressAsFaviconDescription": "Змініть іконку логотипу Mainsail на іконку прогресу.",
+            "ProgressAsFaviconDescription": "Змініть іконку логотипу Probe Tech Control на іконку прогресу.",
             "ScrewsTiltAdjustDialog": "Вікно налаштування гвинтів нахилу стола",
             "ScrewsTiltAdjustDialogDescription": "Відобразити допоміжне вікно для SCREWS_TILT_CALCULATE.",
             "TempchartHeight": "Висота графіку температур",

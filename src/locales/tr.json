@@ -2,10 +2,10 @@
     "App": {
         "Notifications": {
             "BrowserWarnings": {
-                "Description": "{name} eski sürümdür ve tam olarak desteklenmez. Mevcut sürüm {version} olarak gözükmektedir. Mainsail, sürüm {minVersion} veya üzerini gerektirir.",
+                "Description": "{name} eski sürümdür ve tam olarak desteklenmez. Mevcut sürüm {version} olarak gözükmektedir. Probe Tech Control, sürüm {minVersion} veya üzerini gerektirir.",
                 "Headline": "Eski sürüm tarayıcı"
             },
-            "DependencyDescription": "Geçerli {name} sürümü, Mainsail'in tüm özelliklerini desteklemiyor. {name} ürününü en az {neededVersion} sürümüne güncelleyin.",
+            "DependencyDescription": "Geçerli {name} sürümü, Probe Tech Control'in tüm özelliklerini desteklemiyor. {name} ürününü en az {neededVersion} sürümüne güncelleyin.",
             "DependencyName": "Bağımlılık: {name}",
             "DismissAll": "Hepsini reddet",
             "KlipperWarnings": {
@@ -734,7 +734,7 @@
         "Connecting": "{host} ile bağlantı kuruluyor",
         "ConnectionFailed": "Bağlantı başarısız",
         "EditPrinter": "Yazıcıyı Düzenle",
-        "Hello": "Merhaba ve Mainsail'in uzaktan moduna hoş geldiniz!",
+        "Hello": "Merhaba ve Probe Tech Control'in uzaktan moduna hoş geldiniz!",
         "HostnameInvalid": "geçersiz Hostname/IP",
         "HostnameIp": "Hostname/IP",
         "HostnameRequired": "Hostname gerekli",
@@ -860,7 +860,7 @@
             "FactoryReset": "Fabrika ayarlarına sıfırla",
             "General": "Genel",
             "Language": "Dil",
-            "MainsailSettingsMoonrakerDb": "Moonraker DB'deki Mainsail Ayarları",
+            "MainsailSettingsMoonrakerDb": "Moonraker DB'deki Probe Tech Control Ayarları",
             "PrinterName": "Yazıcı Adı",
             "Reset": "sıfırla",
             "Restore": "Geri Yükle",

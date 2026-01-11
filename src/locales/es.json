@@ -2,10 +2,10 @@
     "App": {
         "Notifications": {
             "BrowserWarnings": {
-                "Description": "{name} está desactualizado y no es totalmente compatible. La versión actual es {version}, pero Mainsail requiere la versión {minVersion} o superior.",
+                "Description": "{name} está desactualizado y no es totalmente compatible. La versión actual es {version}, pero Probe Tech Control requiere la versión {minVersion} o superior.",
                 "Headline": "Navegador obsoleto"
             },
-            "DependencyDescription": "La versión actual de {name} no es compatible con todas las funciones de Mainsail. Actualice {name} a al menos {neededVersion}.",
+            "DependencyDescription": "La versión actual de {name} no es compatible con todas las funciones de Probe Tech Control. Actualice {name} a al menos {neededVersion}.",
             "DependencyName": "Dependencia: {name}",
             "DismissAll": "Descartar todo",
             "KlipperWarnings": {
@@ -858,7 +858,7 @@
         "Connecting": "Conectando a {host}",
         "ConnectionFailed": "Conexión fallida",
         "EditPrinter": "Editar impresora",
-        "Hello": "¡Hola y bienvenido al modo remoto de Mainsail!",
+        "Hello": "¡Hola y bienvenido al modo remoto de Probe Tech Control!",
         "HostnameInvalid": "Nombre de host o IP inválida",
         "HostnameIp": "Nombre del host/IP",
         "HostnameRequired": "El nombre del host es obligatorio",
@@ -992,7 +992,7 @@
             "FactoryReset": "Restablecimiento de fábrica",
             "General": "General",
             "Language": "Idioma",
-            "MainsailSettingsMoonrakerDb": "Ajustes de Mainsail en Moonraker DB",
+            "MainsailSettingsMoonrakerDb": "Ajustes de Probe Tech Control en Moonraker DB",
             "PrinterName": "Nombre de la impresora",
             "Reset": "Reiniciar",
             "Restore": "Restaurar",
@@ -1239,7 +1239,7 @@
             "PrintstatusThumbnailZoom": "Zoom para miniaturas grandes",
             "PrintstatusThumbnailZoomDescription": "Esto desactivará el efecto zoom de la miniatura en el panel de estado.",
             "ProgressAsFavicon": "Mostrar el progreso como un favicon",
-            "ProgressAsFaviconDescription": "Cambiar el favicon del logotipo de Mainsail por un círculo de progreso.",
+            "ProgressAsFaviconDescription": "Cambiar el favicon del logotipo de Probe Tech Control por un círculo de progreso.",
             "ScrewsTiltAdjustDialog": "Diálogo de Ajuste de Inclinación de los Tornillos",
             "ScrewsTiltAdjustDialogDescription": "Mostrar diálogo de ayuda para SCREWS_TILT_CALCULATE.",
             "TempchartHeight": "Gráfico de Temperaturas de Altura",

@@ -2,10 +2,10 @@
     "App": {
         "Notifications": {
             "BrowserWarnings": {
-                "Description": "{name} 已过时且没有完整支持。当前版本是{version}，但是Mainsail需要{minVersion}或更高版本。",
+                "Description": "{name} 已过时且没有完整支持。当前版本是{version}，但是Probe Tech Control需要{minVersion}或更高版本。",
                 "Headline": "浏览器版本过低"
             },
-            "DependencyDescription": "当前版本的{name}并不支持Mainsail的全部功能。{name}需要至少更新到{neededVersion}版本。",
+            "DependencyDescription": "当前版本的{name}并不支持Probe Tech Control的全部功能。{name}需要至少更新到{neededVersion}版本。",
             "DependencyName": "依赖：{name}",
             "DismissAll": "忽略全部",
             "KlipperWarnings": {
@@ -1055,7 +1055,7 @@
             "ErrorWhileConnecting": "连接 {url} 时出错",
             "FPS": "帧率",
             "Headline": "摄像头",
-            "NoWebcam": "没有可用的摄像头。在\"Mainsail设置\" -> \"摄像头\"添加新的摄像头。",
+            "NoWebcam": "没有可用的摄像头。在\"Probe Tech Control设置\" -> \"摄像头\"添加新的摄像头。",
             "UnknownWebcamService": "未知的摄像头服务"
         },
         "ZoffsetPanel": {
@@ -1101,7 +1101,7 @@
         "Connecting": "正在连接到{host}",
         "ConnectionFailed": "连接失败",
         "EditPrinter": "编辑打印机",
-        "Hello": "欢迎使用Mainsail远程模式！",
+        "Hello": "欢迎使用Probe Tech Control远程模式！",
         "HostnameInvalid": "不可用的主机名称/IP地址",
         "HostnameIp": "主机名称/IP地址",
         "HostnameRequired": "需要配置主机名称/IP地址",
@@ -1236,7 +1236,7 @@
             "FactoryReset": "恢复默认设置",
             "General": "通用",
             "Language": "界面语言选择",
-            "MainsailSettingsMoonrakerDb": "在Moonraker数据库中的Mainsail设置",
+            "MainsailSettingsMoonrakerDb": "在Moonraker数据库中的Probe Tech Control设置",
             "PrinterName": "打印机名称",
             "Reset": "重启",
             "Restore": "恢复",
@@ -1263,7 +1263,7 @@
                 "Spring": "春季色调"
             }
         },
-        "InterfaceSettings": "Mainsail设置",
+        "InterfaceSettings": "Probe Tech Control设置",
         "MacrosTab": {
             "Add": "添加",
             "AddGroup": "添加分组",
@@ -1503,7 +1503,7 @@
             "PrintstatusThumbnailZoom": "大缩略图缩放",
             "PrintstatusThumbnailZoomDescription": "这将取消状态面板中缩略图的缩放效果。",
             "ProgressAsFavicon": "显示进度到浏览器标签",
-            "ProgressAsFaviconDescription": "将浏览器标签的Mainsail图标更改为进度圆圈。",
+            "ProgressAsFaviconDescription": "将浏览器标签的Probe Tech Control图标更改为进度圆圈。",
             "ScrewsTiltAdjustDialog": "螺丝倾斜调整对话框",
             "ScrewsTiltAdjustDialogDescription": "显示SCREWS_TILT_CALCULATE辅助对话框。",
             "TempchartHeight": "温度图表高度",

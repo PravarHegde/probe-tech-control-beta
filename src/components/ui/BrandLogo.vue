@@ -1,6 +1,6 @@
 <template>
     <div class="brand-logo">
-        <img src="@/assets/logo.svg" alt="Mainsail Logo" />
+        <img src="@/assets/logo.svg" alt="Probe Tech Logo" />
     </div>
 </template>
 
@@ -10,14 +10,14 @@ import { Mixins, Prop } from 'vue-property-decorator'
 import BaseMixin from '../mixins/base'
 
 @Component
-export default class MainsailLogo extends Mixins(BaseMixin) {
+export default class BrandLogo extends Mixins(BaseMixin) {
     @Prop({ required: false, default: '' })
     declare readonly color: string
 }
 </script>
 
 <style scoped>
-.mainsail-logo img {
+.brand-logo img {
     max-height: 100%;
     max-width: 100%;
 }

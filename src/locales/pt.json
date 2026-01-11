@@ -1,7 +1,7 @@
 {
     "App": {
         "Notifications": {
-            "DependencyDescription": "A versão {name} atual não oferece suporte a todos os recursos do Mainsail. Atualize {name} para pelo menos {neededVersion}.",
+            "DependencyDescription": "A versão {name} atual não oferece suporte a todos os recursos do Probe Tech Control. Atualize {name} para pelo menos {neededVersion}.",
             "DependencyName": "Dependência: {name}",
             "DismissAll": "Recusar tudo",
             "KlipperWarnings": {
@@ -700,7 +700,7 @@
         "Connecting": "Conectando-se a {host}",
         "ConnectionFailed": "Falha na conexão",
         "EditPrinter": "Editar Impressora",
-        "Hello": "Olá e seja bem-vindo ao modo remoto do Mainsail!",
+        "Hello": "Olá e seja bem-vindo ao modo remoto do Probe Tech Control!",
         "HostnameInvalid": "Nome de host/IP inválido.",
         "HostnameIp": "Nome de host/IP",
         "HostnameRequired": "Nome de host é requerido",
