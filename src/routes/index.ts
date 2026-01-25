@@ -6,6 +6,11 @@ import Files from '../pages/Files.vue'
 import History from '../pages/History.vue'
 import Timelapse from '../pages/Timelapse.vue'
 import Machine from '../pages/Machine.vue'
+import AgentDashboard from '../pages/AgentDashboard.vue'
+import Connectivity from '../pages/Connectivity.vue'
+import Marketplace from '../pages/Marketplace.vue'
+import Heightmap from '../pages/Heightmap.vue'
+import Viewer from '../pages/Viewer.vue'
 import { AsyncComponent, Component } from 'vue'
 
 import {
@@ -18,6 +23,9 @@ import {
     mdiHistory,
     mdiTimelapse,
     mdiWrench,
+    mdiRobot,
+    mdiQrcodeScan,
+    mdiShopping,
 } from '@mdi/js'
 
 const routes: AppRoute[] = [
@@ -30,6 +38,36 @@ const routes: AppRoute[] = [
         alwaysShow: true,
         showInNavi: true,
         position: 10,
+    },
+    {
+        name: 'agent',
+        title: 'AI Agent',
+        path: '/agent',
+        icon: mdiRobot,
+        component: AgentDashboard,
+        alwaysShow: true,
+        showInNavi: true,
+        position: 15,
+    },
+    {
+        name: 'connectivity',
+        title: 'Pro Connect',
+        path: '/connect',
+        icon: mdiQrcodeScan,
+        component: Connectivity,
+        alwaysShow: true,
+        showInNavi: true,
+        position: 16,
+    },
+    {
+        name: 'marketplace',
+        title: 'Pro Shop',
+        path: '/marketplace',
+        icon: mdiShopping,
+        component: Marketplace,
+        alwaysShow: true,
+        showInNavi: true,
+        position: 17,
     },
     {
         name: 'farm',
@@ -66,7 +104,7 @@ const routes: AppRoute[] = [
         title: 'Heightmap',
         path: '/heightmap',
         icon: mdiGrid,
-        component: () => import('../pages/Heightmap.vue'),
+        component: Heightmap,
         alwaysShow: false,
         showInNavi: true,
         klipperComponent: 'bed_mesh',
@@ -89,7 +127,7 @@ const routes: AppRoute[] = [
         title: 'G-Code Viewer',
         path: '/viewer',
         icon: mdiVideo3d,
-        component: () => import('../pages/Viewer.vue'),
+        component: Viewer,
         alwaysShow: true,
         showInNavi: true,
         position: 60,

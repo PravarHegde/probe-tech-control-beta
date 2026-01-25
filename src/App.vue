@@ -407,6 +407,7 @@ export default class App extends Mixins(BaseMixin, ThemeMixin) {
 @import './assets/styles/sidebar.css';
 @import './assets/styles/utils.css';
 @import './assets/styles/updateManager.css';
+@import './styles/glassmorphism.scss';
 
 :root {
     --app-height: 100%;

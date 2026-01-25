@@ -1,27 +1,24 @@
 <template>
     <div>
-        <v-tooltip right :open-delay="500" :disabled="navigationStyle !== 'iconsOnly'">
-            <template #activator="{ on, attrs }">
-                <v-list-item
-                    :router="to !== undefined"
-                    :to="to"
-                    :href="href"
-                    :target="target"
-                    :class="itemClass"
-                    v-bind="attrs"
-                    v-on="on">
-                    <v-list-item-icon class="my-3 mr-3 menu-item-icon">
-                        <v-icon>{{ icon }}</v-icon>
-                    </v-list-item-icon>
-                    <v-list-item-content>
-                        <v-list-item-title tile class="menu-item-title">
-                            {{ title }}
-                        </v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
-            </template>
-            <span>{{ title }}</span>
-        </v-tooltip>
+        <!-- NUCLEAR OPTION: Raw HTML Div instead of Vuetify Component -->
+        <div
+            class="custom-sidebar-item d-flex align-center px-4"
+            :class="itemClass"
+            @click="handleNavigation"
+            v-bind="$attrs"
+            role="button"
+            tabindex="0">
+            
+            <div class="my-3 mr-3 menu-item-icon">
+                <v-icon>{{ icon }}</v-icon>
+            </div>
+            
+            <div class="menu-item-content">
+                <div class="menu-item-title text-truncate">
+                    {{ title }}
+                </div>
+            </div>
+        </div>
         <v-divider v-if="borderBottom" class="my-1" />
     </div>
 </template>
@@ -76,6 +73,23 @@ export default class SidebarItem extends Mixins(BaseMixin) {
             'active-nav-item': this.isActive,
         }
     }
+    
+    handleNavigation() {
+        if (this.to) {
+            if (this.$route.path !== this.to) {
+                this.$router.push(this.to).catch(err => {
+                    // Ignore navigation duplicated errors
+                    if (err.name !== 'NavigationDuplicated') console.error(err)
+                });
+            }
+        } else if (this.href) {
+            if (this.target === '_blank') {
+                window.open(this.href, '_blank');
+            } else {
+                window.location.href = this.href;
+            }
+        }
+    }
 }
 </script>
 
@@ -98,5 +112,24 @@ export default class SidebarItem extends Mixins(BaseMixin) {
     font-weight: 600;
     text-transform: uppercase;
     opacity: 0.85;
+}
+
+/* Custom Item Styles */
+.custom-sidebar-item {
+    cursor: pointer !important;
+    pointer-events: auto !important;
+    z-index: 10000 !important;
+    transition: background-color 0.2s;
+    user-select: none;
+    position: relative;
+    width: 100%;
+}
+
+.custom-sidebar-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.custom-sidebar-item:active {
+    background-color: rgba(255, 255, 255, 0.2);
 }
 </style>

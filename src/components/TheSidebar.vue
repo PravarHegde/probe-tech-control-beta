@@ -12,7 +12,7 @@
             <v-img :src="sidebarBackground" height="100%" />
         </template>
 
-        <overlay-scrollbars class="nav-scrollbar">
+        <div class="nav-scrollbar" style="overflow-y: auto; height: 100%;">
             <v-list class="pr-0 pt-0 ml-0">
                 <v-list-item
                     v-if="isMobile"
@@ -29,7 +29,7 @@
                 </v-list-item>
                 <sidebar-item v-for="(category, index) in visibleNaviPoints" :key="index" :item="category" />
             </v-list>
-        </overlay-scrollbars>
+        </div>
         <template #append>
             <v-list-item class="small-list-item mb-2">
                 <v-list-item-icon class="menu-item-icon">

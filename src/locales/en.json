@@ -1102,7 +1102,13 @@
         "Machine": "Machine",
         "Printers": "Printers",
         "Timelapse": "Timelapse",
-        "Webcam": "Webcam"
+        "Webcam": "Webcam",
+        "AI Agent": "AI Agent",
+        "Agent": "AI Agent",
+        "Pro Connect": "Pro Connect",
+        "Connect": "Pro Connect",
+        "Pro Shop": "Pro Shop",
+        "Shop": "Pro Shop"
     },
     "ScrewsTiltAdjust": {
         "Accept": "accept",
@@ -1473,6 +1479,7 @@
             "ConfirmOnEmergencyStopDescription": "Show a confirmation dialog on Emergency Stop",
             "ConfirmOnPowerDeviceChange": "Require confirm on Device Power changes",
             "ConfirmOnPowerDeviceChangeDescription": "Show a confirmation dialog on Device Power changes",
+            "CustomBackground": "Custom Background",
             "DashboardFilesFilter": "Dashboard Files Filter",
             "DashboardFilesFilterCompleted": "Completed",
             "DashboardFilesFilterDescription": "Filter the files in the Dashbord Status Panel by their last status.",

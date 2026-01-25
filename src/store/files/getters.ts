@@ -44,118 +44,121 @@ export const getters: GetterTree<FileState, any> = {
 
     getGcodeFiles:
         (state, getters, rootState, rootGetters) =>
-        (path: string | null, boolShowHiddenFiles: boolean, boolShowPrintedFiles: boolean) => {
-            const rootGcodes = getters['getDirectory']('gcodes')
-            if (rootGcodes === null) return []
+            (path: string | null, boolShowHiddenFiles: boolean, boolShowPrintedFiles: boolean) => {
+                const rootGcodes = getters['getDirectory']('gcodes')
+                if (rootGcodes === null) return []
 
-            let files: FileStateFile[] = []
+                let files: FileStateFile[] = []
 
-            if (path !== null) {
-                const directory = getters['getDirectory']('gcodes' + path)
-                files = directory?.childrens ?? []
-            } else {
-                const searchGcodes = (directory: FileStateFile, currentPath: string) => {
-                    if (directory.isDirectory && directory.childrens?.length) {
-                        directory.childrens?.forEach((file) => {
-                            if (!file.isDirectory) {
-                                const tmp = { ...file }
-                                tmp.filename = currentPath + file.filename
-                                files.push(tmp)
-                            } else searchGcodes(file, currentPath + file.filename + '/')
-                        })
+                if (path !== null) {
+                    const directory = getters['getDirectory']('gcodes' + path)
+                    files = directory?.childrens ?? []
+                } else {
+                    const searchGcodes = (directory: FileStateFile, currentPath: string) => {
+                        if (directory.isDirectory && directory.childrens?.length) {
+                            directory.childrens?.forEach((file) => {
+                                if (!file.isDirectory) {
+                                    const tmp = { ...file }
+                                    tmp.filename = currentPath + file.filename
+                                    files.push(tmp)
+                                } else searchGcodes(file, currentPath + file.filename + '/')
+                            })
+                        }
                     }
+
+                    searchGcodes(rootGcodes, '')
                 }
 
-                searchGcodes(rootGcodes, '')
-            }
+                files = files.filter((file: FileStateFile) => {
+                    // filter hidden files
+                    if (!boolShowHiddenFiles && (file.filename === 'thumbs' || file.filename.startsWith('.'))) return false
 
-            files = files.filter((file: FileStateFile) => {
-                // filter hidden files
-                if (!boolShowHiddenFiles && (file.filename === 'thumbs' || file.filename.startsWith('.'))) return false
+                    // START filter != gcode files or dirs
+                    if (file.isDirectory) return true
 
-                // START filter != gcode files or dirs
-                if (file.isDirectory) return true
+                    const pos = file.filename.lastIndexOf('.')
+                    const extension = file.filename.slice(pos)
 
-                const pos = file.filename.lastIndexOf('.')
-                const extension = file.filename.slice(pos)
-
-                return validGcodeExtensions.includes(extension)
-                // END filter != gcode files or dirs
-            })
-
-            const gcodes = Object.keys(rootState.printer.gcode.commands ?? {})
-            const preheat_gcode_objects = [
-                { name: 'first_layer_extr_temp', gcode: 'M104' },
-                { name: 'first_layer_bed_temp', gcode: 'M140' },
-                { name: 'chamber_temp', gcode: 'M141' },
-            ].filter((obj) => gcodes.includes(obj.gcode))
-
-            // build gcode files array with all data in one array
-            const output: FileStateGcodefile[] = []
-            files.forEach((file: FileStateFile) => {
-                const fileTimestamp = typeof file.modified.getTime === 'function' ? file.modified.getTime() : 0
-                const tmp: FileStateGcodefile = {
-                    ...file,
-                    full_filename: path ? path + '/' + file.filename : file.filename,
-                    preheat_gcode: null,
-                    count_printed: 0,
-                    last_start_time: null,
-                    last_end_time: null,
-                    last_filament_used: null,
-                    last_status: null,
-                    last_print_duration: null,
-                    last_total_duration: null,
-                }
-
-                const preheat_gcode_array: string[] = []
-                preheat_gcode_objects.forEach((object) => {
-                    if (object.name in file && file[object.name] > 1) {
-                        preheat_gcode_array.push(`${object.gcode} S${file[object.name]}`)
-                    }
+                    return validGcodeExtensions.includes(extension)
+                    // END filter != gcode files or dirs
                 })
 
-                if (preheat_gcode_array.length) {
-                    tmp.preheat_gcode = preheat_gcode_array.join('\n')
-                }
+                const gcodes = Object.keys(rootState.printer?.gcode?.commands ?? {})
+                const preheat_gcode_objects = [
+                    { name: 'first_layer_extr_temp', gcode: 'M104' },
+                    { name: 'first_layer_bed_temp', gcode: 'M140' },
+                    { name: 'chamber_temp', gcode: 'M141' },
+                ].filter((obj) => gcodes.includes(obj.gcode))
 
-                let histories = rootGetters['server/history/getPrintJobsForGcodes'](
-                    tmp.full_filename,
-                    fileTimestamp,
-                    file.size,
-                    file.uuid ?? null,
-                    file.job_id
-                )
-
-                if (histories && histories.length) {
-                    histories = histories.sort(
-                        (a: ServerHistoryStateJob, b: ServerHistoryStateJob) => b.start_time - a.start_time
-                    )
-
-                    const histories_completed = histories.filter(
-                        (history: ServerHistoryStateJob) => history.status === 'completed'
-                    )
-
-                    const last_history = [...histories].shift()
-                    tmp.last_status = last_history.status
-                    tmp.count_printed = histories_completed.length
-                    tmp.last_start_time = new Date(last_history.start_time * 1000)
-
-                    if (tmp.count_printed > 0) {
-                        const history_completed = histories_completed[0]
-                        tmp.last_start_time = new Date(history_completed.start_time * 1000)
-                        tmp.last_end_time = new Date(history_completed.end_time * 1000)
-                        tmp.last_filament_used = history_completed.filament_used
-                        tmp.last_print_duration = history_completed.print_duration
-                        tmp.last_total_duration = history_completed.total_duration
+                // build gcode files array with all data in one array
+                const output: FileStateGcodefile[] = []
+                files.forEach((file: FileStateFile) => {
+                    const fileTimestamp =
+                        file.modified instanceof Date
+                            ? file.modified.getTime()
+                            : new Date(file.modified).getTime()
+                    const tmp: FileStateGcodefile = {
+                        ...file,
+                        full_filename: path ? path + '/' + file.filename : file.filename,
+                        preheat_gcode: null,
+                        count_printed: 0,
+                        last_start_time: null,
+                        last_end_time: null,
+                        last_filament_used: null,
+                        last_status: null,
+                        last_print_duration: null,
+                        last_total_duration: null,
                     }
-                }
 
-                if (boolShowPrintedFiles) output.push(tmp)
-                else if (tmp.count_printed === 0) output.push(tmp)
-            })
+                    const preheat_gcode_array: string[] = []
+                    preheat_gcode_objects.forEach((object) => {
+                        if (object.name in file && file[object.name] > 1) {
+                            preheat_gcode_array.push(`${object.gcode} S${file[object.name]}`)
+                        }
+                    })
 
-            return output
-        },
+                    if (preheat_gcode_array.length) {
+                        tmp.preheat_gcode = preheat_gcode_array.join('\n')
+                    }
+
+                    let histories = rootGetters['server/history/getPrintJobsForGcodes'](
+                        tmp.full_filename,
+                        fileTimestamp,
+                        file.size,
+                        file.uuid ?? null,
+                        file.job_id
+                    )
+
+                    if (histories && histories.length) {
+                        histories = histories.sort(
+                            (a: ServerHistoryStateJob, b: ServerHistoryStateJob) => b.start_time - a.start_time
+                        )
+
+                        const histories_completed = histories.filter(
+                            (history: ServerHistoryStateJob) => history.status === 'completed'
+                        )
+
+                        const last_history = [...histories].shift()
+                        tmp.last_status = last_history.status
+                        tmp.count_printed = histories_completed.length
+                        tmp.last_start_time = new Date(last_history.start_time * 1000)
+
+                        if (tmp.count_printed > 0) {
+                            const history_completed = histories_completed[0]
+                            tmp.last_start_time = new Date(history_completed.start_time * 1000)
+                            tmp.last_end_time = new Date(history_completed.end_time * 1000)
+                            tmp.last_filament_used = history_completed.filament_used
+                            tmp.last_print_duration = history_completed.print_duration
+                            tmp.last_total_duration = history_completed.total_duration
+                        }
+                    }
+
+                    if (boolShowPrintedFiles) output.push(tmp)
+                    else if (tmp.count_printed === 0) output.push(tmp)
+                })
+
+                return output
+            },
 
     getAllGcodes: (state, getters) => {
         return getters['getGcodeFiles'](null, false, true)
@@ -166,14 +169,19 @@ export const getters: GetterTree<FileState, any> = {
 
         const file = directory?.childrens?.find(
             (element: FileStateFile) =>
+                !element.isDirectory &&
                 element.filename?.slice(0, element.filename?.lastIndexOf('.')) === acceptName &&
                 acceptExtensions.includes(element.filename?.slice(element.filename?.lastIndexOf('.') + 1))
         )
         if (!file) return null
 
-        return `${rootGetters['socket/getUrl']}/server/files/config/${themeDir}/${
-            file.filename
-        }?timestamp=${file.modified.getTime()}`
+        const timestamp =
+            file.modified instanceof Date
+                ? file.modified.getTime()
+                : new Date(file.modified).getTime()
+
+        return `${rootGetters['socket/getUrl']}/server/files/config/${themeDir}/${file.filename
+            }?timestamp=${!isNaN(timestamp) ? timestamp : Date.now()}`
     },
 
     getSidebarLogo: (state, getters) => {

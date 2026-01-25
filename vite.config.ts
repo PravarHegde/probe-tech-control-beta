@@ -62,7 +62,7 @@ const PWAConfig: Partial<VitePWAOptions> = {
     },
     /* enable sw on development */
     devOptions: {
-        enabled: true,
+        enabled: false,
         type: 'module',
         suppressWarnings: true,
     },
@@ -146,5 +146,16 @@ export default defineConfig({
     server: {
         host: '0.0.0.0',
         port: 8080,
+        proxy: {
+            '/websocket': {
+                target: 'ws://localhost:7125',
+                ws: true,
+                changeOrigin: true,
+            },
+            '^/(printer|api|access|machine|server)/.*': {
+                target: 'http://localhost:7125',
+                changeOrigin: true,
+            },
+        },
     },
 })

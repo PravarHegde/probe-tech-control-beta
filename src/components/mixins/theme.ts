@@ -81,7 +81,7 @@ export default class ThemeMixin extends Vue {
 
     get mainBgImage() {
         const url = this.$store.getters['files/getMainBackground']
-        if (url || this.themeName === 'mainsail') return url
+        if (url) return url
 
         if (!this.theme.mainBackground?.show) return null
 

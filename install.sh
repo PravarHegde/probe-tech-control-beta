@@ -400,16 +400,18 @@ install_probe_tech() {
             echo -e "\n[update_manager]" >> "$MOONRAKER_CONF"
         fi
 
-        if ! grep -q "\[update_manager client probe_tech\]" "$MOONRAKER_CONF"; then
-             cat <<EOF >> "$MOONRAKER_CONF"
+        if ! grep -q "\[update_manager probe_tech\]" "$MOONRAKER_CONF"; then
+             if [ -d "$WEB_DIR" ]; then
+                 cat <<EOF >> "$MOONRAKER_CONF"
 
-[update_manager client probe_tech]
+[update_manager probe_tech]
 type: web
 channel: stable
 repo: PravarHegde/probe-tech-control
 path: ~/probe-tech-control
 EOF
-             echo -e "${GREEN}✓ Moonraker Update Manager added${NC}"
+                 echo -e "${GREEN}✓ Moonraker Update Manager added${NC}"
+             fi
         fi
 
         # --- NEW: UNBLOCK CONNECTIVITY (CORS) ---
@@ -558,12 +560,18 @@ trusted_clients:
 
 [update_manager]
 
-[update_manager client probe_tech]
+EOF
+        # Conditionally add probe_tech update manager
+        if [ -d "${HOME}/probe-tech-control" ]; then
+            cat <<EOF >> "${CONF_DIR}/moonraker.conf"
+
+[update_manager probe_tech]
 type: web
 channel: stable
 repo: PravarHegde/probe-tech-control
 path: ~/probe-tech-control
 EOF
+        fi
         echo -e "${GREEN}✓ Created moonraker.conf (Auto-Assigned Port: ${CYAN}${NEXT_PORT}${GREEN})${NC}"
     fi
 

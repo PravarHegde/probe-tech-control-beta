@@ -153,9 +153,6 @@ export const getDefaultState = (): GuiState => {
             showGCodePanel: false,
             cncMode: false,
         },
-        navigation: {
-            entries: [],
-        },
         uiSettings: {
             mode: defaultMode,
             theme: defaultTheme,

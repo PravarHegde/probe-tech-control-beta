@@ -1,0 +1,88 @@
+/* Glassmorphism Styles */
+
+:root {
+  --glass-bg: rgba(20, 20, 30, 0.4);
+  /* Darker tint for better contrast */
+  --glass-border: rgba(0, 229, 255, 0.2);
+  /* Neon cyan border hint */
+  --glass-blur: 20px;
+  --neo-cyan: #00e5ff;
+  --neo-purple: #d500f9;
+}
+
+.theme--dark.v-application {
+  /* background image is set dynamically via App.vue from user config */
+  background-color: #1a1a1a !important;
+  background-attachment: fixed !important;
+  background-size: cover !important;
+}
+
+#content {
+  background-color: transparent !important;
+  /* Allow body bg to show through */
+}
+
+/* Glass Panels */
+.glass-panel,
+.v-card,
+.v-navigation-drawer,
+.v-sheet:not(.v-sheet--outlined) {
+  background-color: var(--glass-bg) !important;
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border) !important;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3) !important;
+  transition: all 0.3s ease;
+  z-index: 10 !important;
+  pointer-events: auto !important;
+}
+
+.v-navigation-drawer {
+  z-index: 100 !important;
+}
+
+/* Hover Glow Effect for Cards */
+.glass-panel:hover,
+.v-card:hover {
+  box-shadow: 0 0 20px rgba(0, 229, 255, 0.2) !important;
+  border-color: var(--neo-cyan) !important;
+}
+
+/* Force pointer events on sidebar content */
+.v-navigation-drawer__content,
+.os-host,
+.os-padding,
+.os-viewport,
+.os-content,
+.v-list-item,
+.v-list-item__content,
+.v-list-item__icon {
+  pointer-events: auto !important;
+  z-index: 9999 !important;
+  /* Above EVERYTHING */
+}
+
+/* Make sidebar transparent */
+.v-navigation-drawer__content {
+  background: transparent !important;
+}
+
+/* Text Enhancements */
+.v-card__title,
+.v-card__text,
+.v-btn__content {
+  text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+}
+
+/* Buttons with Neon Glow */
+.v-btn.primary {
+  background: linear-gradient(45deg, var(--neo-cyan), #00b8d4) !important;
+  box-shadow: 0 0 15px var(--neo-cyan) !important;
+  border: none !important;
+}
+
+.v-btn.secondary {
+  background: linear-gradient(45deg, var(--neo-purple), #aa00ff) !important;
+  box-shadow: 0 0 15px var(--neo-purple) !important;
+  border: none !important;
+}

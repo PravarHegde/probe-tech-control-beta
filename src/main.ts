@@ -65,7 +65,7 @@ const initLoad = async () => {
         const base = import.meta.env.BASE_URL ?? '/'
 
         //load config.json
-        const res = await fetch(`${base}config.json`)
+        const res = await fetch(`${base}config.json?v=${Date.now()}`)
         const file = (await res.json()) as Record<string, unknown>
 
         window.console.debug('Loaded config.json')
