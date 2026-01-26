@@ -14,9 +14,15 @@ const i18n = new VueI18n({
 
 export default i18n
 
+const localesMap = import.meta.glob('../locales/*.json')
+
 export async function setAndLoadLocale(lang: string) {
-    const locales = await import(`../locales/${lang}.json`)
-    i18n.setLocaleMessage(lang, locales.default)
-    i18n.locale = lang
-    return locales
+    const loadLocale = localesMap[`../locales/${lang}.json`]
+    if (loadLocale) {
+        // @ts-ignore
+        const locales = await loadLocale()
+        i18n.setLocaleMessage(lang, locales.default || locales)
+        i18n.locale = lang
+        return locales
+    }
 }
