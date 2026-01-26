@@ -175,10 +175,7 @@ export const getters: GetterTree<FileState, any> = {
         )
         if (!file) return null
 
-        const timestamp =
-            file.modified instanceof Date
-                ? file.modified.getTime()
-                : new Date(file.modified).getTime()
+        const timestamp = new Date(file.modified).getTime()
 
         return `${rootGetters['socket/getUrl']}/server/files/config/${themeDir}/${file.filename
             }?timestamp=${!isNaN(timestamp) ? timestamp : Date.now()}`
@@ -267,7 +264,7 @@ export const getters: GetterTree<FileState, any> = {
             if (thumbnail && 'relative_path' in thumbnail) {
                 return `${rootGetters['socket/getUrl']}/server/files/${escapePath(currentPath)}/${escapePath(
                     thumbnail.relative_path
-                )}?timestamp=${item.modified.getTime()}`
+                )}?timestamp=${new Date(item.modified).getTime()}`
             }
         }
 
@@ -281,7 +278,7 @@ export const getters: GetterTree<FileState, any> = {
             if (thumbnail && 'relative_path' in thumbnail) {
                 return `${rootGetters['socket/getUrl']}/server/files/${escapePath(currentPath)}/${escapePath(
                     thumbnail.relative_path
-                )}?timestamp=${item.modified.getTime()}`
+                )}?timestamp=${new Date(item.modified).getTime()}`
             }
         }
 
