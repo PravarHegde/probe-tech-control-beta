@@ -82,6 +82,14 @@ select_instance() {
         instances=("${HOME}/printer_data/config")
     fi
 
+    if [ ${#instances[@]} -eq 1 ]; then
+        # AUTO-SELECT if only one exists (Seamless Mode)
+        echo -e "${GREEN}Auto-selecting single instance: ${instances[0]}${NC}"
+        SELECTED_CONF_DIR="${instances[0]}"
+        SELECTED_INSTANCE="$(dirname "$SELECTED_CONF_DIR")"
+        return 0
+    fi
+
     i=1
     for inst in "${instances[@]}"; do
         # Show path relative to home for clarity
