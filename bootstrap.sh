@@ -4,7 +4,7 @@
 # Downloads the repo and starts the seamless installer.
 
 REPO_URL="https://github.com/PravarHegde/probe-tech-control.git"
-INSTALL_DIR="${HOME}/probe-tech-control"
+INSTALL_DIR="${HOME}/ptc_installer"
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 BLUE='\033[1;34m'
