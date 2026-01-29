@@ -377,19 +377,9 @@ install_probe_tech() {
     PRINTER_CFG="${SELECTED_CONF_DIR}/printer.cfg"
     MOONRAKER_CONF="${SELECTED_CONF_DIR}/moonraker.conf"
     # Use SCRIPT_DIR to find the cfg, ignoring CWD
-    if [ -f "${SCRIPT_DIR}/scripts/probe_tech.cfg" ]; then
-        # Create scripts dir in target config folder if missing (Klipper usually wants includes relative to root or full path)
-        # Actually, standard practice for Klipper includes is relative to printer.cfg
-        # So we should put probe_tech.cfg in a 'scripts' subfolder inside config? 
-        # User requested "in github too many files showing in root", implying source repo cleanup.
-        # But for the INSTALLED config, keeping it organized is also good.
-        # Let's mirror the structure: Copy to ${SELECTED_CONF_DIR}/scripts/probe_tech.cfg
+    if [ -f "${SCRIPT_DIR}/probe_tech.cfg" ]; then
+        cp "${SCRIPT_DIR}/probe_tech.cfg" "$PROBE_CFG"
         
-        mkdir -p "${SELECTED_CONF_DIR}/scripts"
-        cp "${SCRIPT_DIR}/scripts/probe_tech.cfg" "${SELECTED_CONF_DIR}/scripts/probe_tech.cfg"
-        
-        PROBE_CFG="${SELECTED_CONF_DIR}/scripts/probe_tech.cfg"
-
         # DYNAMIC PATCHING: Update virtual_sdcard path for this instance
         # Get the actual instance data directory (one level up from /config)
         local inst_data_dir=$(dirname "$SELECTED_CONF_DIR")
@@ -402,12 +392,11 @@ install_probe_tech() {
     fi
 
     if [ -f "$PRINTER_CFG" ]; then
-        if ! grep -q "include scripts/probe_tech.cfg" "$PRINTER_CFG"; then
-            # Check if old include exists and remove it
-             sed -i '/\[include probe_tech.cfg\]/d' "$PRINTER_CFG"
-             
-             # Add new include
-            sed -i '1s/^/[include scripts\/probe_tech.cfg]\n/' "$PRINTER_CFG"
+        if ! grep -q "include probe_tech.cfg" "$PRINTER_CFG"; then
+             # Remove old scripts/ link if present (cleanup)
+             sed -i '/\[include scripts\/probe_tech.cfg\]/d' "$PRINTER_CFG"
+            
+            sed -i '1s/^/[include probe_tech.cfg]\n/' "$PRINTER_CFG"
             echo -e "${GREEN}✓ Linked in printer.cfg${NC}"
         else
             echo -e "${SILVER}Link already exists.${NC}"
@@ -584,7 +573,7 @@ EOF
     # Create Basic Configs
     if [ ! -f "${CONF_DIR}/printer.cfg" ]; then
         cat <<EOF > "${CONF_DIR}/printer.cfg"
-[include scripts/probe_tech.cfg]
+[include probe_tech.cfg]
 
 [mcu]
 serial: /dev/serial/by-id/PLEASE_UPDATE_ME
@@ -902,7 +891,12 @@ menu_backup() {
 
 do_remove_probe() {
     if select_instance; then
-        rm -f "${SELECTED_CONF_DIR}/scripts/probe_tech.cfg"
+        rm -f "${SELECTED_CONF_DIR}/probe_tech.cfg"
+        # Also clean up scripts/ version if it exists (from previous versions)
+        rm -f "${SELECTED_CONF_DIR}/scripts/probe_tech.cfg" 2>/dev/null
+        rmdir "${SELECTED_CONF_DIR}/scripts" 2>/dev/null
+        
+        sed -i '/\[include probe_tech.cfg\]/d' "${SELECTED_CONF_DIR}/printer.cfg" 2>/dev/null
         sed -i '/\[include scripts\/probe_tech.cfg\]/d' "${SELECTED_CONF_DIR}/printer.cfg" 2>/dev/null
         echo -e "${GREEN}Removed config links.${NC}"
     fi
