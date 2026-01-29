@@ -1133,6 +1133,32 @@ menu_network() {
 
 # --- MAIN LOOP ---
 
+# Check for seamless auto-install on fresh systems
+if [ $# -eq 0 ]; then
+    # Check if critical components are missing (Fresh Install State)
+    if [ ! -d "${HOME}/klipper" ] && [ ! -d "${HOME}/moonraker" ] && [ ! -d "${HOME}/probe-tech-control" ]; then
+        clear
+        print_box "FRESH INSTALLATION DETECTED" "${GOLD}"
+        echo -e "${GREEN}System appears clean.${NC}"
+        echo -e "${GREEN}Starting Seamless Automatic Installation in 30 seconds...${NC}"
+        echo -e "${SILVER}Press ANY KEY to cancel and enter the Main Menu.${NC}"
+        echo ""
+        
+        # Wait 30 seconds for input
+        if read -t 30 -N 1 -s; then
+            echo -e "\n${YELLOW}Auto-Install Cancelled. Opening Menu...${NC}"
+            sleep 1
+        else
+            echo -e "\n${GREEN}Timeout Reached. Starting Auto-Setup...${NC}"
+            auto_install_single
+            
+            # If we reach here, install finished
+            echo -e "${GREEN}Seamless Install Complete.${NC}"
+            exit 0
+        fi
+    fi
+fi
+
 while true; do
     clear
     check_status
