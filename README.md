@@ -37,6 +37,12 @@ chmod +x install.sh
 ./install.sh
 ```
 
+### Option 3: Fresh Re-Install (Troubleshooting)
+If you have a broken installation and want to start fresh (WARNING: Deletes existing `~/ptc` folder):
+```bash
+cd ~ && rm -rf ptc && git clone https://github.com/PravarHegde/probe-tech-control ptc && cd ptc && chmod +x install.sh && ./install.sh
+```
+
 ### Option 2: Manual Setup
 For detailed manual configuration, requirements, and advanced setups, please refer to the:
 👉 **[INSTALL.md](INSTALL.md)**
