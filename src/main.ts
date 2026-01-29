@@ -16,6 +16,7 @@ import VueLoadImage from 'vue-load-image'
 //vue-toast-notifications
 import VueToast from 'vue-toast-notification'
 import 'vue-toast-notification/dist/theme-sugar.css'
+import '@/styles/glassmorphism.scss'
 //overlayerscrollbars-vue
 import { OverlayScrollbarsPlugin } from 'overlayscrollbars-vue'
 import 'overlayscrollbars/css/OverlayScrollbars.css'

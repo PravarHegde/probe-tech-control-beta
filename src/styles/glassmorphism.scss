@@ -46,6 +46,8 @@
 .v-card:hover {
   box-shadow: 0 0 20px rgba(0, 229, 255, 0.2) !important;
   border-color: var(--neo-cyan) !important;
+  /* Ensure hover doesn't break interaction */
+  pointer-events: auto !important;
 }
 
 /* Force pointer events on sidebar content */

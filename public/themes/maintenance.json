@@ -1,0 +1,13 @@
+{
+    "primary": "#2196F3",
+    "secondary": "#2196F3",
+    "background": {
+        "color": "#121212",
+        "image": "img/futuristic_bg.png",
+        "size": "cover",
+        "position": "center"
+    },
+    "logo": {
+        "src": "logo.svg"
+    }
+}

@@ -2,47 +2,54 @@ import http.server
 import socketserver
 import os
 import sys
+import mimetypes
 
 PORT = 8080
-DIRECTORY = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dist')
+DIRECTORY = os.path.dirname(os.path.abspath(__file__))
+
+# Ensure common MIME types are explicitly known
+mimetypes.add_type('application/javascript', '.js')
+mimetypes.add_type('text/css', '.css')
+mimetypes.add_type('image/svg+xml', '.svg')
+mimetypes.add_type('application/json', '.json')
 
 class SPAHandler(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=DIRECTORY, **kwargs)
 
-    def handle_spa_routing(self):
-        # Allow requests to specific file extensions or root
-        # If path doesn't likely point to a file (no extension), serve index.html
+    def do_GET(self):
+        # 1. Clean path
         path = self.path.split('?')[0]  # Remove query params
         
-        # Check if the file exists in the directory (DIRECTORY is absolute)
-        # We strip leading / to join correctly, but we must be careful not to use os.getcwd() if DIRECTORY is absolute
+        # 2. Construct filesystem path
+        # lstrip("/") ensures we append relative to DIRECTORY
         full_path = os.path.join(DIRECTORY, path.lstrip("/"))
         
+        # 3. Check if file exists on disk
         if os.path.exists(full_path) and os.path.isfile(full_path):
-             return # Let default handler serve the file
+             # It exists! Let the parent class serve it (handling Range, caching, etc.)
+             super().do_GET()
+             return
         
-        # Check if it looks like an asset (has extension)
+        # 4. If it doesn't exist...
+        
+        # 4a. Is it a "file-like" request? (has extension)
         _, ext = os.path.splitext(path)
-        if ext and len(ext) < 5: # likely a file like .js, .css, .png
-            return # Let default handler return 404 if missing
+        if ext and len(ext) < 6:
+            # It looks like a file (e.g. .js, .css, .png) but wasn't found.
+            # Serve a 404, DO NOT FALLBACK TO INDEX.HTML (this causes "MIME type text/html" error for missing JS)
+            self.send_error(404, "File not found")
+            return
             
-        # Rewrites
+        # 4b. If it looks like a route (no extension), rewrite to index.html
         self.path = '/index.html'
-
-    def do_GET(self):
-        self.handle_spa_routing()
         super().do_GET()
 
-    def do_HEAD(self):
-        self.handle_spa_routing()
-        super().do_HEAD()
-
 if __name__ == "__main__":
-    # Ensure we are in the right directory or change permission
-    # For now, assumes script runs from project root and dist exists
-    
     Handler = SPAHandler
+    # Allow address reuse to prevent "Address already in use" on quick restarts
+    socketserver.TCPServer.allow_reuse_address = True
+    
     with socketserver.TCPServer(("", PORT), Handler) as httpd:
-        print(f"Serving SPA at port {PORT}")
+        print(f"Serving SPA at port {PORT} from {DIRECTORY}")
         httpd.serve_forever()

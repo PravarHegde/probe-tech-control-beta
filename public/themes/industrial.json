@@ -1,0 +1,24 @@
+{
+    "primary": "#FFD600",
+    "secondary": "#FF6D00",
+    "accent": "#263238",
+    "error": "#D50000",
+    "info": "#0277BD",
+    "success": "#2E7D32",
+    "warning": "#FF9100",
+    "background": {
+        "color": "#212121",
+        "image": "img/themes/mainBackground-industrial.png",
+        "size": "cover",
+        "position": "center"
+    },
+    "logo": {
+        "src": "logo.svg"
+    },
+    "sidebar": {
+        "active": "#FFD600",
+        "background": {
+            "image": "img/themes/sidebarBackground-industrial.png"
+        }
+    }
+}

@@ -83,7 +83,10 @@ export const getters: GetterTree<FileState, any> = {
                     // END filter != gcode files or dirs
                 })
 
-                const gcodes = Object.keys(rootState.printer?.gcode?.commands ?? {})
+                const printer = rootState.printer ?? {}
+                const gcode = printer.gcode ?? {}
+                const commands = gcode.commands ?? {}
+                const gcodes = Object.keys(commands)
                 const preheat_gcode_objects = [
                     { name: 'first_layer_extr_temp', gcode: 'M104' },
                     { name: 'first_layer_bed_temp', gcode: 'M140' },
