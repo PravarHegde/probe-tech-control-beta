@@ -13,20 +13,7 @@
                     :sub-title="$t('Settings.UiSettingsTab.ThemeDescription')">
                     <v-select v-model="themeName" :items="themes" class="mt-0" hide-details outlined dense />
                 </settings-row>
-                <v-divider class="my-2" />
-                <settings-row :title="$t('Settings.UiSettingsTab.CustomBackground')">
-                    <input
-                        ref="fileUpload"
-                        type="file"
-                        accept="image/*"
-                        style="display: none"
-                        @change="uploadMainBackground"
-                    />
-                    <v-btn small color="primary" @click="$refs.fileUpload.click()">
-                        <v-icon left small>mdi-image-plus</v-icon>
-                        Import Local Image
-                    </v-btn>
-                </settings-row>
+
                 <v-divider class="my-2" />
                 <settings-row :title="$t('Settings.UiSettingsTab.Logo')">
                     <v-btn
@@ -757,21 +744,6 @@ export default class SettingsUiSettingsTab extends Mixins(BaseMixin, ThemeMixin)
         if (theme.colorLogo) this.logoColor = theme.colorLogo
     }
 
-    async uploadMainBackground(event: Event) {
-        const target = event.target as HTMLInputElement
-        if (!target.files?.length) return
 
-        const file = target.files[0]
-        const extension = file.name.split('.').pop()
-        const newFile = new File([file], `main-background.${extension}`, { type: file.type })
-
-        await this.$store.dispatch('files/uploadFile', {
-            file: newFile,
-            path: `theme/main-background.${extension}`,
-            root: 'config',
-        })
-        
-        target.value = '' // Reset input
-    }
 }
 </script>

@@ -95,7 +95,6 @@ export default class Panel extends Mixins(BaseMixin) {
 }
 
 .btn-collapsible > * {
-    will-change: transform;
     transition: transform 500ms;
 }
 .icon-rotate-90 {
