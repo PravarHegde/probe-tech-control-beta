@@ -15,7 +15,9 @@
     </v-dialog>
 </template>
 <script lang="ts">
-import { registerSW } from 'virtual:pwa-register'
+import Component from 'vue-class-component'
+import { Mixins } from 'vue-property-decorator'
+import BaseMixin from '@/components/mixins/base'
 
 @Component
 export default class TheServiceWorker extends Mixins(BaseMixin) {
@@ -44,7 +46,8 @@ export default class TheServiceWorker extends Mixins(BaseMixin) {
         this.showDialog = false
     }
 
-    mounted() {
+    async mounted() {
+        const { registerSW } = await import('virtual:pwa-register')
         this.updateSW = registerSW({
             immediate: true,
             onOfflineReady: this.onOfflineReady,

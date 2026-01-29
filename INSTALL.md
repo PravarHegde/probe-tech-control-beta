@@ -12,7 +12,7 @@ This guide provides detailed instructions for installing Probe Tech Control (PTC
 The easiest way to install PTC, Moonraker, and Klipper is using our advanced manager script:
 
 ```bash
-git clone https://github.com/PravarHegde/probe-tech-control-beta ptc
+git clone https://github.com/PravarHegde/probe-tech-control ptc
 cd ptc
 chmod +x install.sh
 ./install.sh

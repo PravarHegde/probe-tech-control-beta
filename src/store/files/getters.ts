@@ -175,7 +175,10 @@ export const getters: GetterTree<FileState, any> = {
         )
         if (!file) return null
 
-        const timestamp = new Date(file.modified).getTime()
+        const timestamp =
+            file.modified instanceof Date
+                ? file.modified.getTime()
+                : new Date(file.modified).getTime()
 
         return `${rootGetters['socket/getUrl']}/server/files/config/${themeDir}/${file.filename
             }?timestamp=${!isNaN(timestamp) ? timestamp : Date.now()}`

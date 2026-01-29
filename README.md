@@ -1,7 +1,7 @@
 <p align="center">
   <a>
     <img src="logo.svg" alt='Probe Tech Control logo' height="152">
-    <h1 align="center">Probe Tech Control (BETA)</h1>
+    <h1 align="center">Probe Tech Control</h1>
   </a>
 </p>
 <p align="center">
@@ -26,7 +26,7 @@ Run one of the following commands on your Raspberry Pi or Linux server (Ubuntu/D
 
 **Standard Installation:**
 ```bash
-git clone https://github.com/PravarHegde/probe-tech-control-beta ptc
+git clone https://github.com/PravarHegde/probe-tech-control ptc
 cd ptc
 chmod +x install.sh
 ./install.sh
@@ -35,7 +35,7 @@ chmod +x install.sh
 **Clear Previous / Start New (Fresh Install):**
 *(Use this if you have an existing installation or a failed attempt)*
 ```bash
-cd ~ && rm -rf ptc && git clone https://github.com/PravarHegde/probe-tech-control-beta ptc && cd ptc && chmod +x install.sh && ./install.sh
+cd ~ && rm -rf ptc && git clone https://github.com/PravarHegde/probe-tech-control ptc && cd ptc && chmod +x install.sh && ./install.sh
 ```
 
 Follow the on-screen menu to choose "Auto-Setup" for a fresh setup.

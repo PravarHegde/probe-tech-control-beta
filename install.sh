@@ -407,7 +407,7 @@ install_probe_tech() {
 [update_manager probe_tech]
 type: web
 channel: stable
-repo: PravarHegde/probe-tech-control-beta
+repo: PravarHegde/probe-tech-control
 path: ~/probe-tech-control
 EOF
                  echo -e "${GREEN}✓ Moonraker Update Manager added${NC}"
@@ -568,7 +568,7 @@ EOF
 [update_manager probe_tech]
 type: web
 channel: stable
-repo: PravarHegde/probe-tech-control-beta
+repo: PravarHegde/probe-tech-control
 path: ~/probe-tech-control
 EOF
         fi
