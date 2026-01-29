@@ -22,9 +22,9 @@
 Choose the method that best suits your needs:
 
 ### Option 1: Quick Install (Recommended)
-Run this single command to download and install automatically:
+Run this single command to download and install automatically (Lightweight):
 ```bash
-wget -O - https://raw.githubusercontent.com/PravarHegde/probe-tech-control/master/bootstrap.sh | bash
+wget -O - https://raw.githubusercontent.com/PravarHegde/probe-tech-control/master/probetech.sh | bash
 ```
 *Supports seamless auto-installation on fresh systems.*
 

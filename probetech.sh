@@ -25,7 +25,9 @@ if [ -d "$INSTALL_DIR" ]; then
     git pull
 else
     echo -e "${GREEN}Cloning Probe Tech Control to $INSTALL_DIR...${NC}"
-    git clone "$REPO_URL" "$INSTALL_DIR"
+    # Use shallow clone (--depth=1) to download only the latest version
+    # This reduces download size from ~100MB to ~2MB.
+    git clone --depth=1 "$REPO_URL" "$INSTALL_DIR"
     cd "$INSTALL_DIR"
 fi
 
